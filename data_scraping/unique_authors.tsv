@@ -1,0 +1,631 @@
+author_id	name	birthday	nationality
+1	Suzanne Collins	1962-08-10	American
+2	Mary GrandPré J. K. Rowling	1965-07-31	British
+3	Jane Austen	1775-12-16	British
+4	Harper Lee	1926-04-28	American
+5	Center for Learning Victoria M. Jones		
+6	Stephenie Meyer	1973-12-24	American
+7	George Orwell	1903-06-25	British
+8	John Ronald Reuel Tolkien	1892-01-03	British
+9	C.S.Lewis	1898-11-29	British
+10	John Green	1977-08-24	American
+11	Oscar Wilde	1854-10-16	Irish
+12	Shel Silverstein	1930-09-25	American
+13	Margaret Mitchell	1900-11-08	American
+14	Emily Brontë	1818-07-30	British
+15	Stephen Chbosky	1970-01-25	American
+16	Charlotte Brontë	1816-04-21	British
+17	Rick Riordan	1964-06-05	American
+18	F. Scott Fitzgerald	1896-09-24	American
+19	Antoine de Saint-Exupéry	1900-06-29	French
+20	John Helfers		
+21	Lewis Carroll	1832-01-27	British
+22	Fyodor Dostoyevsky	1821-11-11	Russian
+23	Veronica Roth	1988-08-19	American
+24	Arthur Golden	1956-12-06	American
+25	Victor Hugo	1802-02-26	French
+26	Paulo Coelho	1947-08-24	Brazilian
+27	William Golding	1911-09-19	British
+28	William Shakespeare	1564-04-26	English
+29	L. M. Montgomery	1874-11-30	Canadian
+30	Cassandra Clare	1973-07-27	American
+31	Douglas Adams	1952-03-11	British
+32	Kathryn Stockett	1969-01-01	American
+33	Bram Stoker	1847-11-08	Irish
+34	Orson Scott Card	1951-08-24	American
+35	Kate DiCamillo E. B. White	1899-07-11	American
+36	John Steinbeck	1902-02-27	American
+37	Ray Bradbury	1920-08-22	American
+38	J. D. Salinger	1919-01-01	American
+39	Aldous Huxley	1894-07-26	British
+40	Gabriel García Márquez	1927-03-06	Colombian
+41	Khaled Hosseini	1965-03-04	Afghan-American
+42	Audrey Niffenegger	1963-06-13	American
+43	William Goldman	1931-08-12	American
+44	Frances Hodgson Burnett	1849-11-24	British-American
+45	George R. R. Martin	1948-09-20	American
+46	S. E. Hinton	1948-07-22	American
+47	Louisa May Alcott	1832-11-29	American
+48	Madeleine L'Engle	1918-11-29	American
+49	Homer	0800-01-01 BC	Greek
+50	Mary Shelley	1797-08-30	British
+51	J.K. Rowling	1965-07-31	British
+52	Lois Lowry	1937-03-20	American
+53	Margaret Atwood	1939-11-18	Canadian
+54	Alice Sebold	1963-09-06	American
+55	Maurice Sendak	1928-06-10	American
+56	Mark Twain	1835-11-30	American
+57	Dr. Seuss	1904-03-02	American
+58	Yann Martel	1963-06-25	Canadian
+59	Charles Dickens	1812-02-07	British
+60	Vladimir Vladimirovich Nabokov	1899-04-22	Russian-American
+61	Frank Herbert	1920-10-08	American
+62	Jr. Kurt Vonnegut	1922-11-11	American
+63	J. K. Rowling	1965-07-31	British
+64	Sara Gruen	1969-01-01	Canadian-American
+65	Sylvia Plath	1932-10-27	American
+66	Roald Dahl	1916-09-13	British
+67	Stephen King	1947-09-21	American
+68	Joseph Heller	1923-05-01	American
+69	Arthur Conan Doyle	1859-05-22	British
+70	Ken Follett	1949-06-05	British
+71	Jean Wardlaw		
+72	Daphne du Maurier	1907-05-13	British
+73	J. R. R. Tolkien	1892-01-03	British
+74	Diana Gabaldon	1952-01-11	American
+75	Stieg Larsson	1954-08-15	Swedish
+76	Alice Walker	1944-02-09	American
+77	Ken Kesey	1935-09-17	American
+78	Leo Tolstoy	1828-09-09	Russian
+79	Jodi Picoult	1966-05-19	American
+80	Fyodor Dostoevsky	1821-11-11	Russian
+81	Betty Smith	1896-12-15	American
+82	Anthony Burgess	1917-02-25	British
+83	Cormac McCarthy	1933-07-20	American
+84	AGATHA CHRISTIE	1890-09-15	British
+85	Philip Pullman	1946-10-19	British
+86	Richelle Mead	1976-11-12	American
+87	Hermann Hesse	1877-07-02	German-Swiss
+88	Kolbe Christin		
+89	Edgar Allan Poe	1809-01-19	American
+90	Anne Rice	1941-10-04	American
+91	Miguel De Cervantes Saavedra	1547-09-29	Spanish
+92	Barbara Kingsolver	1955-04-08	American
+93	Ernest Hemingway	1899-07-21	American
+94	Ayn Rand	1905-02-02	Russian-American
+95	Nicholas Sparks	1965-12-31	American
+96	A. A. Milne	1882-01-18	British
+97	Herman Melville	1819-08-01	American
+98	John Irving	1942-03-02	American
+99	Albert Camus	1913-11-07	French-Algerian
+100	Sue Monk Kidd	1948-08-12	American
+101	Anita Diamant	1951-06-27	American
+102	Patrick Rothfuss	1973-06-06	American
+103	Mikhail Bulgakov	1891-05-15	Russian
+104	Franz Kafka	1883-07-03	Czech-Austrian
+105	Jeffrey Eugenides	1960-03-08	American
+106	Christopher Paolini	1983-11-17	American
+107	Alexandre Dumas	1802-07-24	French
+108	Eric Carle	1929-06-25	American
+109	Mark Haddon	1962-09-26	British
+110	Carlos Ruiz Zafón	1964-09-25	Spanish
+111	C. S. (Clive Staples) Lewis C. S. (Clive Staples) C S Lewis	1898-11-29	British
+112	Mitch Albom	1958-05-23	American
+113	Milan Kundera	1929-04-01	Czech
+114	Jack Kerouac	1922-03-12	American
+115	Umberto Eco	1932-01-05	Italian
+116	Wilson Rawls	1913-09-24	American
+117	Mario Puzo	1920-10-15	American
+118	Louis Sachar	1954-03-20	American
+119	Truman Capote	1924-09-30	American
+120	Patrick Süskind	1949-03-26	German
+121	Nathaniel Hawthorne	1804-07-04	American
+122	Chuck Palahniuk	1962-02-21	American
+123	Neil Gaiman	1960-11-10	British
+124	Dante Alighieri	1265-05-01	Italian
+125	Alan Moore	1953-11-18	British
+126	Sergio Cobo		
+127	Erich Maria Remarque	1898-06-22	German
+128	Becca Fitzpatrick	1979-02-09	American
+129	Laura Ingalls Wilder	1867-02-07	American
+130	Larry McMurtry	1936-06-03	American
+131	Terry Pratchett Neil Gaiman	1948-04-28	British
+132	Leigh Bardugo	1975-04-06	American
+133	J.M. Barrie	1860-05-09	British
+134	Jerry Weaver		
+135	Colleen McCullough	1937-06-01	Australian
+136	Zora Neale Hurston	1891-01-07	American
+137	Lyman Baum	1856-05-15	American
+138	Ian McEwan	1948-06-21	British
+139	Elizabeth Gilbert	1969-07-18	American
+140	James Dashner	1972-11-26	American
+141	Margaret Wise Brown	1910-05-23	American
+142	Shirley Jackson	1916-12-14	American
+143	Sarah J. Maas	1986-03-05	American
+144	Donna Tartt	1963-12-23	American
+145	Joseph Conrad	1857-12-03	Polish-British
+146	Madeline Miller	1978-07-24	American
+147	Thomas Hardy	1840-06-02	British
+148	Katherine Paterson	1932-10-31	American
+149	Kahlil Gibran	1883-01-06	Lebanese-American
+150	Pearl S. Buck	1892-06-26	American
+151	Jack London	1876-01-12	American
+152	Amy Tan	1952-02-19	American
+153	Kiera Cass	1981-05-19	American
+154	Thomas Harris	1940-04-11	American
+155	Susan Nanus		
+156	Erin Morgenstern	1978-07-08	American
+157	Mark Overstall Gustave Flaubert	1821-12-12	French
+158	Marion Zimmer Bradley	1930-06-03	American
+159	Michael Ende	1929-11-12	German
+160	Richard Bach	1936-06-23	American
+161	Robert Louis Stevenson	1850-11-13	British
+162	James Joyce	1882-02-02	Irish
+163	Anne Frank	1929-06-12	German-Dutch
+164	E L James	1963-03-07	British
+165	John Boyne	1971-04-30	Irish
+166	Michael Crichton	1942-10-23	American
+167	Jean M. Auel	1936-02-18	American
+168	Toni Morrison	1931-02-18	American
+169	Geoffrey Chaucer	1343-01-01	English
+170	Jay Asher	1975-09-30	American
+171	Tony Watkins		
+172	Taylor Jenkins Reid	1983-12-20	American
+173	Gregory Maguire	1954-06-09	American
+174	Johnathon Nicolaou		
+175	Thomas Keneally	1935-10-07	Australian
+176	James Clavell	1924-10-10	Australian-American
+177	Marissa Meyer	1984-02-19	American
+178	Margery Williams Margery Williams Bianco	1881-07-22	British-American
+179	Jonathan Safran Foer	1977-02-21	American
+180	Philippa Gregory	1954-01-09	British
+181	Lauren Kate	1981-03-21	American
+182	Gillian Flynn	1971-02-24	American
+183	Viktor E. Frankl	1905-03-26	Austrian
+184	John Kennedy Toole	1937-12-17	American
+185	Diana Wynne Jones	1934-08-16	British
+186	Ki Longfellow		
+187	Arthur Miller	1915-10-17	American
+188	Kurt Vonnegut (Jr)	1922-11-11	American
+189	C. S. Lewis	1898-11-29	British
+190	Lisa Mullarkey Gaston Leroux	1868-05-06	French
+191	Kenneth Grahame	1859-03-08	British
+192	Arundhati Roy	1961-11-24	Indian
+193	John Sherrill Corrie Ten Boom	1892-04-15	Dutch
+194	José Saramago	1922-11-16	Portuguese
+195	Tracy Chevalier	1962-10-19	American-British
+196	Gail Carson Levine	1947-09-17	American
+197	Scott Westerfeld	1963-05-05	American
+198	Haruki Murakami	1949-01-12	Japanese
+199	John Grogan	1957-03-20	American
+200	Wally Lamb	1950-10-17	American
+201	Isabel Allende	1942-08-02	Chilean-American
+202	Annie Barrows Mary Ann Shaffer	1912-01-01	American
+203	Maggie Stiefvater	1981-11-18	American
+204	Kristin Cast P. C. Cast	1961-04-21	American
+205	Laurie Halse Anderson	1961-10-23	American
+206	William Faulkner	1897-09-25	American
+207	Wm. Paul Young	1955-05-11	Canadian
+208	Hunter S. Thompson	1937-07-18	American
+209	Bill Watterson	1958-07-05	American
+210	Sara L. Schwebel Scott O'Dell	1898-05-23	American
+211	Alex Haley	1921-08-11	American
+212	Robert A. Heinlein	1907-07-07	American
+213	Sir Arthur Conan Doyle	1859-05-22	British
+214	Brandon Sanderson	1975-12-19	American
+215	Jon Krakauer	1954-04-12	American
+216	Cornelia Funke	1958-12-10	German
+217	Lauren Oliver	1982-11-08	American
+218	Tim O'Brien	1946-10-01	American
+219	Ralph Ellison	1914-03-01	American
+220	Jamie McGuire	1978-11-06	American
+221	Janet Fitch	1955-11-09	American
+222	Tim Butcher	1967-01-01	British
+223	Harriet Beecher Stowe	1811-06-14	American
+224	Anna Jones Buttimore		
+225	Mary Ellen Snodgrass		
+226	Isaac Asimov	1920-01-02	Russian-American
+227	T.H. White	1906-05-29	British
+228	Kazuo Ishiguro	1954-11-08	British-Japanese
+229	Ernest Cline	1972-03-29	American
+230	Elizabeth Kostova	1964-12-26	American
+231	R. J. Palacio	1963-07-13	American
+232	Voltaire	1694-11-21	French
+233	H. G. Wells	1866-09-21	British
+234	Christopher Moore	1957-01-01	American
+235	Merritt Yerkes Hughes John Milton	1608-12-09	English
+236	Tahereh Mafi	1988-11-09	American
+237	Diane Setterfield	1964-08-22	British
+238	Johanna Spyri	1827-06-12	Swiss
+239	Walt Whitman	1819-05-31	American
+240	Kristin Cashore	1976-01-01	American
+241	Judy Blume	1938-02-12	American
+242	Jojo Moyes	1969-08-04	British
+243	Henry David Thoreau	1817-07-12	American
+244	Rainbow Rowell	1973-02-24	American
+245	Andy Weir	1972-06-16	American
+246	Jostein Gaarder	1952-08-08	Norwegian
+247	Virginia Woolf	1882-01-25	British
+248	Marie Lu	1984-07-11	American
+249	Kathy Bates	1948-06-28	American
+250	Kate Chopin	1850-02-08	American
+251	Art Spiegelman	1948-02-15	American
+252	Anthony Doerr	1973-10-27	American
+253	William Styron	1925-06-11	American
+254	Philip K. Dick	1928-12-16	American
+255	George Eliot	1819-11-22	British
+256	Jon Stone	1931-04-13	American
+257	Pat Conroy	1945-10-26	American
+258	Chinua Achebe	1930-11-16	Nigerian
+259	Charlaine Harris	1951-11-25	American
+260	John Grisham	1955-02-08	American
+261	Anna Sewell	1820-03-30	British
+262	Helen Fielding	1958-02-19	British
+263	David Lloyd Alan Moore	1953-11-18	British
+264	Benjamin Alire Saenz	1954-08-16	American
+265	Garth Stein	1964-12-06	American
+266	Holly Black	1971-11-10	American
+267	Robin Furth Peter David Stephen King	1947-09-21	American
+268	Bill Bryson	1951-12-08	American
+269	Bret Easton Ellis	1964-03-07	American
+270	Unknown		
+271	Robert N. Munsch	1945-06-11	American-Canadian
+272	Bryce Courtenay	1933-08-14	South African-Australian
+273	Gayle Forman	1970-06-05	American
+274	Jonathan Swift	1667-11-30	Irish
+275	Robert Jordan	1948-10-17	American
+276	Hans Walter Gabler James Joyce	1882-02-02	Irish
+277	Natalie Babbitt	1932-07-28	American
+278	Ann Patchett	1963-12-02	American
+279	Dave Pelzer	1960-12-29	American
+280	Anonymous		
+281	Colleen Hoover	1979-12-11	American
+282	Beatrice Sparks	1917-01-15	American
+283	Charles Frazier	1950-11-04	American
+284	J.R. Ward	1969-01-01	American
+285	David Mitchell	1969-01-12	British
+286	Lao Tzu	0600-01-01 BC	Chinese
+287	Kami Garcia	1972-03-25	American
+288	John Knowles	1926-09-16	American
+289	Jennifer L. Armentrout	1980-06-11	American
+290	Daniel Defoe	1660-01-01	English
+291	مصطفوی، سید مرتضی		
+292	Emma Donoghue	1969-10-24	Irish-Canadian
+293	Michael Chabon	1963-05-24	American
+294	Jerry Spinelli	1941-02-01	American
+295	Robert M. Pirsig	1928-09-06	American
+296	Борис Леонидович Пастернак	1890-02-10	Russian
+297	Salman Rushdie	1947-06-19	British-Indian
+298	Michael Ondaatje	1943-09-12	Canadian-Sri Lankan
+299	Ransom Riggs	1979-02-03	American
+300	V.C. Andrews	1923-06-06	American
+301	Hanya Yanagihara	1974-09-20	American
+302	Laura Esquivel	1950-09-30	Mexican
+303	Willa Cather	1873-12-07	American
+304	Victoria Aveyard	1990-07-27	American
+305	John Berendt	1939-12-05	American
+306	Charles Darwin	1809-02-12	British
+307	Jennifer Niven	1968-01-01	American
+308	Tennessee Williams	1911-03-26	American
+309	Laini Taylor	1971-12-22	American
+310	Niccolò Machiavelli	1469-05-03	Italian
+311	Holly Jackson	1992-01-01	British
+312	Rohinton Mistry	1952-07-03	Indian-Canadian
+313	David Foster Wallace	1962-02-21	American
+314	Laura Hillenbrand	1967-05-15	American
+315	Alyson Noël	1965-12-03	American
+316	Astrid Lindgren	1907-11-14	Swedish
+317	Maya Angelou	1928-04-04	American
+318	Susanna Clarke	1959-11-01	British
+319	Emmuska Orczy	1865-09-23	Hungarian-British
+320	Lisa See	1955-02-18	American
+321	James Patterson	1947-03-22	American
+322	Stephanie Perkins	1979-01-01	American
+323	Ally Condie	1971-11-02	American
+324	Eoin Colfer	1965-05-14	Irish
+325	Johann Wolfgang von Goethe	1749-08-28	German
+326	Delia Owens	1949-04-04	American
+327	Erik Larson	1954-01-03	American
+328	Nick Hornby	1957-04-17	British
+329	E. Lockhart	1967-09-13	American
+330	Annie Proulx	1935-08-22	American
+331	Chaim Potok	1929-02-17	American
+332	Gregory David Roberts	1952-06-21	Australian
+333	Samuel Beckett	1906-04-13	Irish
+334	Angie Thomas	1988-09-20	American
+335	William Gibson	1948-03-17	American-Canadian
+336	Bernhard Schlink	1944-07-06	German
+337	Francine Rivers	1947-01-01	American
+338	Dan Brown	1964-06-22	American
+339	Casey McQuiston	1991-01-01	American
+340	Edith Wharton	1862-01-24	American
+341	William Peter Blatty	1928-01-07	American
+342	T. S. Eliot	1888-09-26	British-American
+343	V. E. Schwab	1987-07-07	American
+344	Rebecca Wells	1952-01-29	American
+345	P.C. Cast	1961-04-21	American
+346	Plato	0428-01-01 BC	Greek
+347	Upton Sinclair	1878-09-20	American
+348	John Leech Pierpont Morgan Library Charles Dickens	1812-02-07	British
+349	David Sedaris	1956-12-26	American
+350	David Guterson	1956-05-04	American
+351	Scott Pitcock		
+352	C.S. Lewis	1898-11-29	British
+353	Kristin Hannah	1960-09-25	American
+354	P. C. Cast	1961-04-21	American
+355	Robert Graves	1895-07-24	British
+356	Rick Yancey	1962-11-04	American
+357	EM Forster	1879-01-01	British
+358	H.G. Wells	1866-09-21	British
+359	Emily Dickinson	1830-12-10	American
+360	Deborah Harkness	1965-04-01	American
+361	أحمد جمال الدين رمضان		
+362	Wilkie Collins	1824-01-08	British
+363	W. Somerset Maugham	1874-01-25	British
+364	Max Brooks	1972-05-22	American
+365	Lemony Snicket Anon9780063437531		
+366	Richard Dawkins	1941-03-26	British
+367	Elizabeth Gaskell	1810-09-29	British
+368	Evelyn Waugh	1903-10-28	British
+369	Neal Shusterman	1962-11-12	American
+370	Julie Kagawa	1982-10-12	American
+371	R. D. Ronald		
+372	Terry Goodkind	1948-01-11	American
+373	Neal Stephenson	1959-10-31	American
+374	E. L. Doctorow Dalton Trumbo	1905-12-09	American
+375	William Makepeace Thackeray	1811-07-18	British
+376	Sylvia Day	1973-03-11	American
+377	Arthur C. Clarke	1917-12-16	British
+378	Alan Paton	1903-01-11	South African
+379	Ursula K. Le Guin	1929-10-21	American
+380	P.D. Eastman	1909-11-25	American
+381	Chris Van Allsburg	1949-06-18	American
+382	Victoria Arch		
+383	Siobhan Dowd Patrick Ness	1960-05-17	British
+384	Tatiana de Rosnay	1961-09-28	French-British
+385	Orpheus Collar Rick Riordan	1964-06-05	American
+386	Joanne Harris	1964-07-03	British
+387	Kelley Armstrong	1968-12-14	Canadian
+388	Jeaniene Frost	1974-06-13	American
+389	Simone Elkeles	1970-04-24	American
+390	Jennifer Lynn Barnes	1982-01-01	American
+391	Sarah Dessen	1970-06-06	American
+392	Jeffrey Zaslow Randy Pausch	1960-10-23	American
+393	Greg Mortenson	1957-12-27	American
+394	Susan Ee	1972-01-01	American
+395	Dan Simmons	1948-04-04	American
+396	Alexandra Bracken	1987-02-27	American
+397	Jandy Nelson	1965-11-25	American
+398	Garth Nix	1963-07-19	Australian
+399	Abraham Verghese	1955-01-01	Indian-American
+400	Daniel Quinn	1935-10-11	American
+401	Proust Marcel	1871-07-10	French
+402	André Aciman	1951-01-02	Egyptian-American
+403	Michelle Hodkin	1982-01-01	American
+404	Ellen Raskin	1928-03-13	American
+405	Irvine Welsh	1958-09-27	Scottish
+406	D. H. Lawrence	1885-09-11	British
+407	Shannon Hale	1974-01-26	American
+408	Pittacus Lore		
+409	Tzu Sun	0544-01-01 BC	Chinese
+410	Alethea Kontis Sherrilyn Kenyon	1965-12-11	American
+411	Michael Cunningham	1952-11-06	American
+412	Max Lucado	1955-01-11	American
+413	Dodie Smith	1896-05-03	British
+414	Aleksandr S. Poesjkin	1799-06-06	Russian
+415	Paperblanks		
+416	Peter S. Beagle	1939-04-20	American
+417	Edmond Rostand	1868-04-01	French
+418	Peter Straub Stephen King	1947-09-21	American
+419	Kate Douglas Wiggin	1856-09-28	American
+420	Lionel Shriver	1957-05-18	American
+421	Yuval Noah Harari	1976-02-24	Israeli
+422	Jhumpa Lahiri	1967-07-11	American
+423	Anne Rice Faye Perozich	1941-10-04	American
+424	CECELIA. AHERN	1981-09-30	Irish
+425	Patrick Ness	1971-10-17	British-American
+426	W. Bruce Cameron	1960-01-01	American
+427	Melissa Marr	1972-07-25	American
+428	Stephen Hawking	1942-01-08	British
+429	Scott Lynch	1978-04-02	American
+430	Alex Michaelides	1977-09-04	Cypriot-British
+431	Robert Penn Warren	1905-04-24	American
+432	Rhonda Byrne	1951-03-12	Australian
+433	Book*Sense		
+434	Aleksandr Solzhenitsyn	1918-12-11	Russian
+435	Adam Silvera	1990-11-05	American
+436	Richard Matheson	1926-02-20	American
+437	Mark Z. Danielewski	1966-03-05	American
+438	Jasper Fforde	1961-01-11	British
+439	Charlotte Perkins Gilman	1860-07-03	American
+440	Jenny Han	1980-09-03	American
+441	Thomas Pynchon	1937-05-08	American
+442	Jeannette Walls	1960-04-21	American
+443	Alice Oseman	1994-10-16	British
+444	Erin Hunter		
+445	Ali Hazelwood	1983-01-01	Italian-American
+446	Leif Enger	1961-09-14	American
+447	Aphrodite Trust Apollo Trust Edith Hamilton	1867-08-12	American
+448	Maria V. Snyder	1973-01-01	American
+449	Paula Hawkins	1972-08-26	British
+450	Fredrik Backman	1981-06-02	Swedish
+451	Sophocles	0496-01-01 BC	Greek
+452	Koushun Takami	1966-01-10	Japanese
+453	Clement Clarke Clement Clarke Moore	1779-07-15	American
+454	Robert Ludlum	1927-05-25	American
+455	Kim Edwards	1958-05-04	American
+456	Howard Zinn	1922-08-24	American
+457	Jules Verne	1828-02-08	French
+458	Richard Wright	1908-09-04	American
+459	Nicole Krauss	1974-08-18	American
+460	Michael Grant	1954-07-26	American
+461	Jerry Jenkins Tim LaHaye	1926-04-27	American
+462	Michael Shaara	1928-06-23	American
+463	Italo Calvino	1923-10-15	Italian
+464	Robin Hobb	1952-03-05	American
+465	Karen Marie Moning	1964-11-01	American
+466	Terry Pratchett	1948-04-28	British
+467	Dean Koontz	1945-07-09	American
+468	Tom Stoppard	1937-07-03	British-Czech
+469	Tamora Pierce	1954-12-13	American
+470	David McCullough	1933-07-07	American
+471	John Fowles	1926-03-31	British
+472	Iain Banks	1954-02-16	Scottish
+473	Pierce Brown	1988-01-28	American
+474	Stephen King Richard Bachman	1947-09-21	American
+475	Brian O'hare		
+476	Becky Albertalli	1982-11-17	American
+477	A. S. Byatt	1936-08-24	British
+478	E.L. Konigsburg	1930-02-10	American
+479	Wilhelm Grimm Jacob Grimm	1785-01-04	German
+480	Janet Evanovich	1943-04-22	American
+481	Andre Dubus	1936-08-11	American
+482	Henri Charrière	1906-11-16	French
+483	Irving Stone	1903-07-14	American
+484	Kurt Vonnegut (jr.).)	1922-11-11	American
+485	Dee Brown	1908-02-29	American
+486	Carl Sagan	1934-11-09	American
+487	Stephen J. Dubner Steven D. Levitt	1963-04-29	American
+488	Katherine Dunn	1945-10-24	American
+489	Sally Rooney	1991-02-20	Irish
+490	Dale Carnegie	1888-11-24	American
+491	Dave Eggers	1970-03-12	American
+492	Louis De Bernières	1954-12-08	British
+493	Ann Brashares	1967-07-30	American
+494	Tom Robbins	1932-07-22	American
+495	Stephanie Garber	1987-01-01	American
+496	Virgil	0070-01-01 BC	Roman
+497	Allen Ginsberg	1926-06-03	American
+498	Elizabeth George Speare	1908-11-21	American
+499	Caleb Carr	1955-08-02	American
+500	Jr. Joseph Smith	1805-12-23	American
+501	Muriel Barbery	1969-05-28	French
+502	Alexander McCall Smith	1948-08-24	British-Zimbabwean
+503	Raymond Chandler	1888-07-23	American
+504	Ally Carter	1974-01-01	American
+505	Erich Segal	1937-06-16	American
+506	Diana Forbes		
+507	Tara Westover	1986-09-27	American
+508	Sir Walter Scott	1771-08-15	Scottish
+509	Yvonne Korshak		
+510	Kerstin Gier	1966-10-08	German
+511	Helen Keller	1880-06-27	American
+512	Thomas Mann	1875-06-06	German
+513	Ned Vizzini	1981-04-04	American
+514	Walter M. Miller (Jr.)	1923-01-23	American
+515	Sophie Kinsella	1969-12-12	British
+516	Karen M. McManus	1977-01-17	American
+517	Robert McCammon	1952-07-17	American
+518	Sharon Creech	1945-07-29	American
+519	Jonathan Franzen	1959-08-17	American
+520	Brandon Mull	1974-11-08	American
+521	Wallace Stegner	1909-02-18	American
+522	Brian Selznick	1966-07-14	American
+523	Rosamunde Pilcher	1924-09-22	British
+524	Jorge Luis Borges	1899-08-24	Argentine
+525	Mia Sheridan	1974-01-01	American
+526	Bill Moyers Joseph Campbell	1904-03-26	American
+527	Kate DiCamillo	1964-03-25	American
+528	Rachel Caine	1962-04-27	American
+529	Rudyard Kipling	1865-12-30	British
+530	David Nicholls	1966-11-30	British
+531	J.A. Redmerski	1975-11-25	American
+532	Josephine Preston Peabody	1874-05-30	American
+533	Sabaa Tahir	1983-01-01	Pakistani-American
+534	Justin Cronin	1962-01-01	American
+535	William S. Burroughs	1914-02-05	American
+536	J. R. Ward	1969-01-01	American
+537	M. L. Rio	1991-01-01	American
+538	Michael Pollan	1955-02-06	American
+539	Stephen R. Covey	1932-10-24	American
+540	Valerie Lawson		
+541	TJ Klune	1982-05-20	American
+542	Lisa Genova	1970-11-22	American
+543	Henry James	1843-04-15	American-British
+544	E. M. Forster	1879-01-01	British
+545	Bible English New International Version New International Version Staff		
+546	Marcus Aurelius	121-04-26	Roman
+547	Kyle Keyes		
+548	Jung Chang	1952-03-25	Chinese-British
+549	AudioGo		
+550	John Ajvide Lindqvist	1968-12-02	Swedish
+551	Barry Kirwan		
+552	Markus Zusak	1975-06-23	Australian
+553	Kate Morton	1976-01-01	Australian
+554	Shannon Messenger	1979-01-01	American
+555	Vladimir Nabokov	1899-04-22	Russian-American
+556	Dennis Lehane	1965-08-04	American
+557	Robert James Waller	1939-08-01	American
+558	Leon Uris	1924-08-03	American
+559	Anne Morrow Lindbergh	1906-06-22	American
+560	Therisa Peimer		
+561	Winston Groom	1943-03-23	American
+562	Irene Daun e Lorena Nuno Daun e Lorena Teresa Mendonça Juliet Marillier	1958-07-27	New Zealander
+563	Tom Clancy	1947-04-12	American
+564	Katja Millay	1972-01-01	American
+565	Helene Hanff	1916-04-15	American
+566	Richard Yates	1926-02-03	American
+567	Jean-Paul Sartre	1905-06-21	French
+568	Olive Ann Burns	1924-07-17	American
+569	Jeanne DuPrau	1944-01-01	American
+570	Jeffrey Archer	1940-04-15	British
+571	Ruta Sepetys	1967-11-19	American
+572	Josephine Hammett Marshall Dashiell Hammett	1894-05-27	American
+573	Gary Chapman	1938-01-10	American
+574	J. W. von Goethe	1749-08-28	German
+575	Sylvain Reynard	1970-01-01	Canadian
+576	M. D. Russell		
+577	Welovenovels Bill Driscoll		
+578	Billie Letts	1938-01-01	American
+579	James Frey	1969-09-12	American
+580	Andrew Davidson	1969-01-01	American
+581	Laurell K. Hamilton	1963-02-19	American
+582	Yevgeny Zamyatin	1884-02-01	Russian
+583	Catherine Marshall	1914-09-27	American
+584	Source Wikipedia		
+585	Louis-Ferdinand Céline	1894-05-27	French
+586	Ellen Hopkins	1955-03-26	American
+587	John Williams	1922-08-29	American
+588	P C Cast	1961-04-21	American
+589	David Wroblewski	1959-01-01	American
+590	Junot Díaz	1968-12-31	Dominican-American
+591	Tom Wolfe	1930-03-02	American
+592	L. J. Smith	1965-09-04	American
+593	Rebecca Skloot	1972-09-19	American
+594	Marjane Satrapi	1969-11-22	Iranian-French
+595	Jacqueline Susann	1918-08-20	American
+596	Robert Frost	1874-03-26	American
+597	Richard Llewellyn	1906-12-08	British-Welsh
+598	Tammara Webber	1970-01-01	American
+599	Matt Haig	1975-07-03	British
+600	Friedrich Wilhelm Nietzsche	1844-10-15	German
+601	Trenton Lee Stewart	1970-05-27	American
+602	Krishna-Dwaipayana Vyasa		
+603	Monica Odle Gloria Levine		
+604	Robin McKinley	1952-11-16	American
+605	John Anthony Flanagan	1944-05-22	Australian
+606	S.C. Stephens	1979-01-01	American
+607	Nevil Shute Norway	1899-01-17	British-Australian
+608	Brian Jacques	1939-06-15	British
+609	Carmela M. Krueser		
+610	Ocean Vuong	1988-10-14	Vietnamese-American
+611	David Levithan John Green	1977-08-24	American
+612	Don DeLillo	1936-11-20	American
+613	Curt Gentry Vincent Bugliosi	1934-08-18	American
+614	Nicola Yoon	1972-01-01	Jamaican-American
+615	Samuel Taylor Coleridge	1772-10-21	British
+616	Munro Leaf	1905-12-04	American
+617	David Lawrence Karen Marie Moning	1964-11-01	American
+618	Colleen Houck	1969-01-01	American
+619	David Leslie Murray		
+620	J. M. Coetzee	1940-02-09	South African
+621	Sherrilyn Kenyon	1965-12-11	American
+622	Aprilynne Pike	1981-05-09	American
+623	Michelle Obama	1964-01-17	American
+624	Henrik Ibsen	1828-03-20	Norwegian
+625	Augusten Burroughs	1965-10-23	American
+626	M. M. Kaye	1908-08-21	British
+627	سید مرتضی مصطفوی		
+628	Aimee Cabo Nikolov	1971-01-01	American
+629	Nancy E. Turner	1953-01-01	American
+630	William HONE	1780-06-03	British
