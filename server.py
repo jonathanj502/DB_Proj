@@ -12,7 +12,7 @@ import os
 # accessible as a variable in index.html:
 from sqlalchemy import *
 from sqlalchemy.pool import NullPool
-from flask import Flask, request, render_template, g, redirect, Response, abort
+from flask import Flask, request, render_template, g, redirect, Response, abort, url_for, make_response
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
@@ -86,20 +86,6 @@ def teardown_request(exception):
     except Exception as e:
         pass
 
-
-#
-# @app.route is a decorator around index() that means:
-#   run index() whenever the user tries to access the "/" path using a GET request
-#
-# If you wanted the user to go to, for example, localhost:8111/foobar/ with POST or GET then you could use:
-#
-#       @app.route("/foobar/", methods=["POST", "GET"])
-#
-# PROTIP: (the trailing / in the path is important)
-#
-# see for routing: https://flask.palletsprojects.com/en/1.1.x/quickstart/#routing
-# see for decorators: http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/
-#
 @app.route('/')
 def index():
     """
@@ -168,6 +154,7 @@ def book(book_id):
             WHERE b.book_id = :book_id
     ''')
     
+    # Get author by book_id
     authors_sql = text('''
 		SELECT a.author_id, a.name
 		FROM author a
@@ -206,12 +193,109 @@ def book(book_id):
 def author(author_id):
     return render_template("author_page.html")
 
-@app.route('/login')
+@app.route('/profile/<int:profile_id>')
+def profile(profile_id):
+    try:
+        row = g.conn.execute(
+            text("SELECT profile_id, username, joined_at FROM profile WHERE profile_id = :pid"),
+            {"pid": profile_id}
+        ).fetchone()
+    except Exception as e:
+        print("profile db error:", e)
+        abort(500)
+
+    if row is None:
+        abort(404)
+
+    m = getattr(row, "_mapping", row)
+    profile = {
+        "profile_id": m.get("profile_id") if hasattr(m, "get") else row[0],
+        "username": m.get("username") if hasattr(m, "get") else row[1],
+        "joined_at": m.get("joined_at") if hasattr(m, "get") else row[2],
+    }
+    return render_template('profile.html', profile=profile)
+
+# deletes cookies and redirects to home
+@app.route('/logout', methods=['POST'])
+def logout():
+    resp = make_response(redirect(url_for('index')))
+    resp.delete_cookie('profile_id')
+    resp.delete_cookie('username')
+    return resp
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    abort(401)
-    # Your IDE may highlight this as a problem - because no such function exists (intentionally).
-    # This code is never executed because of abort().
-    this_is_never_executed()
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        if not username:
+            return render_template('login.html', error="Username required.")
+
+        try:
+            row = g.conn.execute(
+                text("SELECT profile_id FROM profile WHERE username = :u"),
+                {"u": username}
+            ).fetchone()
+        except Exception as e:
+            print("login db error:", e)
+            return render_template('login.html', error="Server error, please try again.")
+
+        if row is None:
+            return render_template('login.html', error="Unknown username.")
+
+        # set cookie to indicate who is logged in (no session handling)
+        m = getattr(row, "_mapping", row)
+        profile_id = m.get("profile_id") if hasattr(m, "get") else row[0]
+        resp = make_response(redirect(url_for('index')))
+        resp.set_cookie('profile_id', str(profile_id), httponly=True)
+        resp.set_cookie('username', username)
+        return resp
+
+    return render_template('login.html')
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+
+        # basic validation
+        if not username:
+            return render_template('signup.html', error="All fields are required.")
+        
+        # check if username already exists
+        try:
+            existing = g.conn.execute(
+                text("SELECT profile_id FROM profile WHERE username = :u"),
+                {"u": username}
+            ).fetchone()
+        except Exception:
+            existing = None
+       
+        if existing:
+            return render_template('signup.html', error="Username already taken.")
+
+        # insert new user into database (manual profile_id since column is plain INTEGER PK)
+        try:
+            maxrow = g.conn.execute(text("SELECT COALESCE(MAX(profile_id), 0) AS maxid FROM profile")).fetchone()
+            maxid = (maxrow[0] if maxrow else 0) or 0
+            new_id = maxid + 1
+
+            g.conn.execute(
+                text("INSERT INTO profile (profile_id, username, joined_at) "
+                     "VALUES (:id, :u, CURRENT_TIMESTAMP)"),
+                {"id": new_id, "u": username}
+            )
+            g.conn.commit()
+        except Exception as e:
+            try:
+                g.conn.rollback()
+            except Exception:
+                pass
+            print("signup insert error:", e)
+            return render_template('signup.html', error="Could not create account.")
+
+        return redirect(url_for('login'))
+
+    return render_template('signup.html')
 
 
 if __name__ == "__main__":

@@ -7,6 +7,21 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"">
 </head>
 <body>
+  <header class="topbar">
+    <div class="brand">Book Search</div>
+    <div class="top-actions">
+      {# if a profile_id cookie is present show avatar linking to profile, otherwise show login link #}
+      {% if request.cookies.get('profile_id') %}
+        <a class="profile-link" href="{{ url_for('profile', profile_id=request.cookies.get('profile_id')) }}">
+          <img class="avatar" src="{{ url_for('static', filename='img/default-avatar.png') }}"
+               alt="{{ request.cookies.get('username') or 'Profile' }}" loading="lazy">
+        </a>
+      {% else %}
+        <a class="signin" href="{{ url_for('login') }}">Log in</a>
+      {% endif %}
+    </div>
+  </header>
+
   <div class="c">
     <!-- Centered search form -->
     <form action="/search" method="get" role="search" aria-label="Book search">

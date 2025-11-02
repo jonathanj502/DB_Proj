@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Sign in</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <main class="signin-page" style="max-width:460px;margin:40px auto;padding:0 16px;box-sizing:border-box;">
+    <p><a href="{{ url_for('index') }}">&larr; Home</a></p>
+
+    <h1>Sign in</h1>
+
+    {% if error %}
+      <div class="error" style="color:#b00020;margin-bottom:12px;">{{ error }}</div>
+    {% endif %}
+
+    <form method="post" action="{{ url_for('login') }}">
+      <label style="display:block;margin-bottom:8px;">
+        <span>Username</span><br>
+        <input name="username" type="text" required autocomplete="username" style="width:100%;padding:8px;margin-top:6px;box-sizing:border-box;">
+      </label>
+
+      <label style="display:flex;align-items:center;gap:8px;margin:10px 0;">
+        <input type="checkbox" name="remember" value="1">
+        <span>Remember me</span>
+      </label>
+
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button type="submit" style="padding:8px 12px;">Sign in</button>
+        <a href="{{ url_for('signup') }}" style="margin-left:auto;font-size:14px;">Create account</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

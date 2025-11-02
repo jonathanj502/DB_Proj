@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ profile.username }} — Profile</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header style="max-width:1000px;margin:12px auto;padding:0 16px;">
+    <a href="{{ url_for('index') }}">&larr; Home</a>
+  </header>
+
+  <main style="max-width:720px;margin:24px auto;padding:16px;">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <img src="{{ url_for('static', filename='img/default-avatar.png') }}" alt="{{ profile.username }}"
+           style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:1px solid #ddd;">
+      <div>
+        <h1 style="margin:0">{{ profile.username }}</h1>
+        <p style="margin:6px 0 0;color:#666">Joined: {{ profile.joined_at }}</p>
+      </div>
+    </div>
+
+    <!-- logout form -->
+    <form method="post" action="{{ url_for('logout') }}" style="margin-top:16px;">
+      <button type="submit" style="padding:8px 12px;border-radius:4px;border:1px solid #ccc;background:#fff;cursor:pointer;">
+        Log out
+      </button>
+    </form>
+
+    <!-- add more profile details here -->
+  </main>
+</body>
+</html>
