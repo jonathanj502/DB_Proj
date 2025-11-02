@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ book.title if book else "Book" }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <p><a href="{{ url_for('index') }}">&larr; Back</a></p>
+
+  {% if not book %}
+    <p>Book not found.</p>
+  {% else %}
+    <div class="book-page">
+      <div class="book-cover">
+        {% if book.image_url %}
+          <img src="{{ book.image_url }}" alt="{{ book.title }}" class="thumb" onerror="this.style.display='none'">
+        {% else %}
+          <div class="thumb placeholder">No image</div>
+        {% endif %}
+      </div>
+
+      <div class="book-info">
+        <h1>{{ book.title }}</h1>
+
+        {% if book.authors %}
+          <p class="byline">
+            By
+            {% if book.authors is iterable and book.authors[0] is mapping %}
+              {% for a in book.authors %}
+                {% if a.id %}
+                  <a href="{{ url_for('author', author_id=a.id) }}">{{ a.name }}</a>{% if not loop.last %}, {% endif %}
+                {% else %}
+                  {{ a.name }}{% if not loop.last %}, {% endif %}
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              {{ book.authors }}
+            {% endif %}
+          </p>
+        {% endif %}
+
+        {% if book.summary %}
+          <h3>Summary</h3>
+          <p class="summary">{{ book.summary }}</p>
+        {% endif %}
+
+        <ul class="meta">
+          <li><strong>Published:</strong> {{ book.published_year or 'N/A' }}</li>
+          <li><strong>Pages:</strong> {{ book.page_count or 'N/A' }}</li>
+          <li><strong>Language:</strong> {{ book.language or 'N/A' }}</li>
+        </ul>
+      </div>
+
+      
+    </div>
+    <!-- Reviews -->
+    <div class="reviews-section">
+      <h3>Reviews</h3>
+  {% endif %}
+</body>
+</html>

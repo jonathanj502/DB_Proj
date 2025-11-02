@@ -141,7 +141,8 @@ def search():
             b.title AS title,
             b.publication_year AS published_year,
             b.image_url AS image_url,
-            COALESCE(string_agg(a.name, ', '), '') AS authors
+            COALESCE(string_agg(a.name, ', '), '') AS authors,
+            COALESCE(string_agg(DISTINCT a.author_id::text, ','), '') AS author_ids
         FROM book b
         LEFT JOIN written_by wb ON b.book_id = wb.book_id
         LEFT JOIN author a ON wb.author_id = a.author_id
@@ -151,20 +152,34 @@ def search():
         LIMIT 50
     ''')
     cursor = g.conn.execute(find_book_command, {"p": f"%{q}%"})
-    
-	# Append all results to books list
+
+    # Append all results to books list
     books = []
     for row in cursor:
-        books.append({
-            "id": row["id"],
-            "title": row["title"],
-            "authors": row["authors"],
-            "published_year": row["published_year"],
-            "image_url": row["image_url"],
-    	})
+        # row = (id, title, published_year, image_url, authors, author_ids)
+        author_info = []
+        for name, author_id in zip(row[4].split(', '), row[5].split(',')):
+             author_info.append((name, author_id))
+        
+		books.append({
+            "id": row[0],
+            "title": row[1],
+            "authors": author_info,
+            "published_year": row[2],
+            "image_url": row[3]
+        })
+    print(books)
     cursor.close()
 
-    return render_template("prototype.html", results=books, qeury=q)
+    return render_template("prototype.html", results=books, query=q)
+
+@app.route('/book/<int:book_id>')
+def book(book_id):
+    return render_template("book_page.html")
+
+@app.route('/author/<int:author_id>')
+def author(author_id):
+    return render_template("author_page.html")
 
 @app.route('/login')
 def login():

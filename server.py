@@ -115,17 +115,7 @@ def index():
     # DEBUG: this is debugging code to see what request looks like
     print(request.args)
 
-    #
-    # example of a database query
-    #
-    # select_query = "SELECT name from test"
-    # cursor = g.conn.execute(text(select_query))
-    # names = []
-    # for result in cursor:
-    #       names.append(result[0])
-    # cursor.close()
-
-    return render_template("prototype.html")
+    return render_template("index.html")
 
 @app.route('/search', methods=['GET'])
 def search():
@@ -155,7 +145,7 @@ def search():
     # Append all results to books list
     books = []
     for row in cursor:
-        # row = (id, title, published_year, image_url, authors)
+        # row = (id, title, published_year, image_url, authors, author_ids)
         books.append({
             "id": row[0],
             "title": row[1],
@@ -163,10 +153,58 @@ def search():
             "published_year": row[2],
             "image_url": row[3],
         })
-    print(books)
     cursor.close()
 
-    return render_template("prototype.html", results=books, query=q)
+    return render_template("index.html", results=books, query=q)
+
+@app.route('/book/<int:book_id>')
+def book(book_id):
+    print("BOOK PAGE")
+    # Get book info by book_id
+    book_sql = text('''
+        SELECT
+        	b.book_id, b.title, b.publication_year, b.image_url, b.summary, b.page_count, b.lang
+			FROM book b
+            WHERE b.book_id = :book_id
+    ''')
+    
+    authors_sql = text('''
+		SELECT a.author_id, a.name
+		FROM author a
+		JOIN written_by wb ON a.author_id = wb.author_id
+		WHERE wb.book_id = :book_id
+    ''')
+                    
+    
+    cursor = g.conn.execute(book_sql, {"book_id": book_id})
+    row = cursor.fetchone()
+    if row is None:
+        abort(404)
+    m = getattr(row, "_mapping", row)
+    book = {
+        "id": m.get("book_id") or m.get("id"),
+        "title": m.get("title"),
+        "published_year": m.get("publication_year"),
+        "image_url": (m.get("image_url") or "").strip().strip("'\""),
+        "summary": m.get("summary"),
+        "page_count": m.get("page_count"),
+        "language": m.get("lang"),
+    }
+    
+    # load authors as list of dicts
+    cursor = g.conn.execute(authors_sql, {"book_id": book_id})
+    authors = []
+    for r in cursor:
+        rm = getattr(r, "_mapping", r)
+        authors.append({"id": rm.get("author_id"), "name": rm.get("name")})
+    cursor.close()
+    book["authors"] = authors
+    
+    return render_template("book_page.html", book=book)
+
+@app.route('/author/<int:author_id>')
+def author(author_id):
+    return render_template("author_page.html")
 
 @app.route('/login')
 def login():

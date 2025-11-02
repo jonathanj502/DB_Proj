@@ -36,3 +36,78 @@ button {
   width: min(900px, 95%);
   margin-top: 8px;
 }
+
+.book-page {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  max-width: 1000px;
+  margin: 24px auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.book-cover {
+  flex: 0 0 160px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.thumb {
+  width: 100%;
+  max-width: 160px;
+  height: auto;
+  object-fit: cover;
+  border: 1px solid #ddd;
+  background: #f8f8f8;
+}
+
+.thumb.placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 14px;
+  height: 220px;
+  width: 140px;
+}
+
+.book-info {
+  flex: 1 1 auto;
+  min-width: 0; /* allow text truncation inside flex */
+}
+
+.book-info h1 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+}
+
+.byline {
+  margin: 6px 0 12px 0;
+  color: #444;
+}
+
+.summary {
+  margin-top: 8px;
+  line-height: 1.45;
+  color: #222;
+}
+
+.meta {
+  margin-top: 12px;
+  padding-left: 0;
+  list-style: none;
+  color: #333;
+}
+
+.meta li {
+  margin: 6px 0;
+}
+
+.reviews-section {
+  max-width: 1000px;
+  margin: 24px auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
