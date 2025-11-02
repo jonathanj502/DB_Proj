@@ -1,0 +1,33 @@
+</html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Search</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"">
+</head>
+<body>
+  <div class="c">
+    <!-- Centered search form -->
+    <form action="/search" method="get" role="search" aria-label="Book search">
+      <input type="search" name="q" placeholder="e.g. The Hunger Games, Suzanne Collins">
+      <button type="submit">Search</button>
+    </form>
+  </div>
+
+  {% if results %}
+  <div class="results" aria-live="polite">
+    {% for b in results %}
+      <div class="result-item">
+        <strong>{{ b.title }}</strong>
+        <div>{{ b.authors or 'Unknown author' }}</div>
+      </div>
+    {% endfor %}
+  </div>
+  {% else %}
+    {% if query %}
+      <p style="text-align:center;margin-top:20px">No results for "{{ query }}".</p>
+    {% endif %}
+  {% endif %}
+</body>
+</html>

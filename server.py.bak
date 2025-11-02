@@ -151,22 +151,20 @@ def search():
         LIMIT 50
     ''')
     cursor = g.conn.execute(find_book_command, {"p": f"%{q}%"})
-
-    # Append all results to books list
+    
+	# Append all results to books list
     books = []
     for row in cursor:
-        # row = (id, title, published_year, image_url, authors)
         books.append({
-            "id": row[0],
-            "title": row[1],
-            "authors": row[4],
-            "published_year": row[2],
-            "image_url": row[3],
-        })
-    print(books)
+            "id": row["id"],
+            "title": row["title"],
+            "authors": row["authors"],
+            "published_year": row["published_year"],
+            "image_url": row["image_url"],
+    	})
     cursor.close()
 
-    return render_template("prototype.html", results=books, query=q)
+    return render_template("prototype.html", results=books, qeury=q)
 
 @app.route('/login')
 def login():
