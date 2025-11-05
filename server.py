@@ -449,11 +449,326 @@ def profile(profile_id):
         "username": m.get("username") if hasattr(m, "get") else row[1],
         "joined_at": m.get("joined_at") if hasattr(m, "get") else row[2],
     }
-    return render_template('profile.html', profile=profile)
 
-# deletes cookies and redirects to home
+    # show private bookshelves only to the profile owner (based on cookie)
+    viewer = request.cookies.get('profile_id')
+    try:
+        is_owner = (int(viewer) == profile_id)
+    except Exception:
+        is_owner = False
+
+    try:
+        if is_owner:
+            bs_cur = g.conn.execute(
+                text("""
+                    SELECT bookshelf_id, shelf_name, description, is_public, created_at
+                    FROM bookshelf
+                    WHERE profile_id = :pid
+                    ORDER BY created_at DESC
+                """),
+                {"pid": profile_id}
+            )
+        else:
+            bs_cur = g.conn.execute(
+                text("""
+                    SELECT bookshelf_id, shelf_name, description, is_public, created_at
+                    FROM bookshelf
+                    WHERE profile_id = :pid AND is_public = TRUE
+                    ORDER BY created_at DESC
+                """),
+                {"pid": profile_id}
+            )
+
+        bookshelves = []
+        for b in bs_cur:
+            bm = getattr(b, "_mapping", b)
+            bookshelves.append({
+                "id": bm.get("bookshelf_id") if hasattr(bm, "get") else b[0],
+                "name": bm.get("shelf_name") if hasattr(bm, "get") else b[1],
+                "description": bm.get("description") if hasattr(bm, "get") else b[2],
+                "is_public": bm.get("is_public") if hasattr(bm, "get") else b[3],
+                "created_at": bm.get("created_at") if hasattr(bm, "get") else b[4],
+            })
+        bs_cur.close()
+    except Exception as e:
+        print("bookshelves db error:", e)
+        bookshelves = []
+
+    has_view_bookshelf = 'view_bookshelf' in app.view_functions
+    return render_template('profile.html', profile=profile, bookshelves=bookshelves, is_owner=is_owner, has_view_bookshelf=has_view_bookshelf)
+
+@app.route('/bookshelf/<int:bookshelf_id>')
+def view_bookshelf(bookshelf_id):
+    try:
+        row = g.conn.execute(
+            text("""
+                SELECT bs.bookshelf_id, bs.profile_id, bs.shelf_name, bs.description,
+                       bs.is_public, bs.created_at, p.username AS owner_username
+                FROM bookshelf bs
+                LEFT JOIN profile p ON bs.profile_id = p.profile_id
+                WHERE bs.bookshelf_id = :bsid
+            """),
+            {"bsid": bookshelf_id}
+        ).fetchone()
+    except Exception as e:
+        print("bookshelf db error:", e)
+        abort(500)
+
+    if row is None:
+        abort(404)
+
+    m = getattr(row, "_mapping", row)
+    shelf = {
+        "id": m.get("bookshelf_id") if hasattr(m, "get") else row[0],
+        "profile_id": m.get("profile_id") if hasattr(m, "get") else row[1],
+        "name": m.get("shelf_name") if hasattr(m, "get") else row[2],
+        "description": m.get("description") if hasattr(m, "get") else row[3],
+        "is_public": bool(m.get("is_public")) if hasattr(m, "get") else bool(row[4]),
+        "created_at": m.get("created_at") if hasattr(m, "get") else row[5],
+        "owner_username": m.get("owner_username") if hasattr(m, "get") else row[6],
+    }
+
+    # viewer = cookie (same pattern used elsewhere)
+    viewer = request.cookies.get('profile_id')
+    try:
+        is_owner = (int(viewer) == shelf["profile_id"])
+    except Exception:
+        is_owner = False
+
+    # enforce visibility: if private and not owner -> 403
+    if not shelf["is_public"] and not is_owner:
+        abort(403)
+
+    # load books in the bookshelf (most recent added first)
+    try:
+        cur = g.conn.execute(
+            text("""
+                SELECT b.book_id AS id, b.title AS title, b.publication_year AS published_year, b.image_url
+                FROM contains_book cb
+                JOIN book b ON cb.book_id = b.book_id
+                WHERE cb.bookshelf_id = :bsid
+                ORDER BY cb.added_at DESC
+            """),
+            {"bsid": bookshelf_id}
+        )
+        books = []
+        for r in cur:
+            rm = getattr(r, "_mapping", r)
+            books.append({
+                "id": rm.get("id") if hasattr(rm, "get") else r[0],
+                "title": rm.get("title") if hasattr(rm, "get") else r[1],
+                "published_year": rm.get("published_year") if hasattr(rm, "get") else r[2],
+                "image_url": rm.get("image_url") if hasattr(rm, "get") else r[3],
+            })
+        cur.close()
+    except Exception as e:
+        print("books in bookshelf db error:", e)
+        books = []
+
+    return render_template("view_bookshelf.html", shelf=shelf, books=books, is_owner=is_owner)
+
+@app.route('/bookshelf/<int:bookshelf_id>/delete', methods=['POST'])
+def delete_bookshelf(bookshelf_id):
+    # require logged in user
+    pid_cookie = request.cookies.get('profile_id')
+    if not pid_cookie:
+        return redirect(url_for('login'))
+    try:
+        pid = int(pid_cookie)
+    except Exception:
+        return redirect(url_for('login'))
+
+    try:
+        res = g.conn.execute(
+            text("DELETE FROM bookshelf WHERE bookshelf_id = :bsid AND profile_id = :pid"),
+            {"bsid": bookshelf_id, "pid": pid}
+        )
+        try:
+            g.conn.commit()
+        except Exception:
+            pass
+
+        # if no row deleted, either not owner or shelf doesn't exist
+        if getattr(res, "rowcount", None) == 0:
+            abort(403)
+    except Exception as e:
+        print("delete_bookshelf db error:", e)
+        try:
+            g.conn.rollback()
+        except Exception:
+            pass
+        abort(500)
+
+    # redirect back to owner's profile page
+    return redirect(url_for('profile', profile_id=pid))
+
+@app.route('/bookshelf/create', methods=['POST'])
+def create_bookshelf():
+    pid_cookie = request.cookies.get('profile_id')
+    if not pid_cookie:
+        return redirect(url_for('login'))
+    try:
+        pid = int(pid_cookie)
+    except Exception:
+        return redirect(url_for('login'))
+
+    name = request.form.get('shelf_name', '').strip()
+    description = request.form.get('description', '').strip() or None
+    is_public = bool(request.form.get('is_public'))
+
+    if not name:
+        return redirect(url_for('profile', profile_id=pid))
+
+    try:
+        # generate an integer id if the table doesn't auto-increment
+        maxrow = g.conn.execute(text("SELECT COALESCE(MAX(bookshelf_id), 0) AS maxid FROM bookshelf")).fetchone()
+        maxid = (maxrow[0] if maxrow else 0) or 0
+        new_id = maxid + 1
+
+        g.conn.execute(
+            text("""
+                INSERT INTO bookshelf (bookshelf_id, profile_id, shelf_name, description, is_public)
+                VALUES (:id, :pid, :name, :description, :is_public)
+            """),
+            {"id": new_id, "pid": pid, "name": name, "description": description, "is_public": is_public}
+        )
+        try:
+            g.conn.commit()
+        except Exception:
+            pass
+    except Exception as e:
+        print("create bookshelf db error:", e)
+        try:
+            g.conn.rollback()
+        except Exception:
+            pass
+
+    return redirect(url_for('profile', profile_id=pid))
+
+@app.route('/bookshelf/<int:bookshelf_id>/add', methods=['POST'])
+def add_book_to_shelf(bookshelf_id):
+    # require logged in user
+    pid_cookie = request.cookies.get('profile_id')
+    if not pid_cookie:
+        return redirect(url_for('login'))
+    try:
+        pid = int(pid_cookie)
+    except Exception:
+        return redirect(url_for('login'))
+
+    # verify bookshelf exists and owner
+    try:
+        row = g.conn.execute(
+            text("SELECT profile_id FROM bookshelf WHERE bookshelf_id = :bsid"),
+            {"bsid": bookshelf_id}
+        ).fetchone()
+    except Exception as e:
+        print("bookshelf lookup error:", e)
+        abort(500)
+
+    if row is None:
+        abort(404)
+
+    owner = getattr(row, "_mapping", row).get("profile_id") if hasattr(getattr(row, "_mapping", row), "get") else row[0]
+    try:
+        if int(owner) != pid:
+            abort(403)
+    except Exception:
+        abort(403)
+
+    # parse book_id from form
+    book_id_raw = (request.form.get('book_id') or "").strip()
+    try:
+        book_id = int(book_id_raw)
+    except Exception:
+        return redirect(url_for('view_bookshelf', bookshelf_id=bookshelf_id))
+
+    # check book exists
+    try:
+        exists = g.conn.execute(text("SELECT 1 FROM book WHERE book_id = :bid"), {"bid": book_id}).fetchone()
+    except Exception as e:
+        print("book lookup error:", e)
+        return redirect(url_for('view_bookshelf', bookshelf_id=bookshelf_id))
+
+    if not exists:
+        return redirect(url_for('view_bookshelf', bookshelf_id=bookshelf_id))
+
+    # insert into contains_book (ignore if already present)
+    try:
+        g.conn.execute(
+            text("""
+                INSERT INTO contains_book (bookshelf_id, book_id)
+                VALUES (:bsid, :bid)
+                ON CONFLICT (bookshelf_id, book_id) DO NOTHING
+            """),
+            {"bsid": bookshelf_id, "bid": book_id}
+        )
+        try:
+            g.conn.commit()
+        except Exception:
+            pass
+    except Exception as e:
+        print("add to bookshelf db error:", e)
+        try:
+            g.conn.rollback()
+        except Exception:
+            pass
+
+    return redirect(url_for('view_bookshelf', bookshelf_id=bookshelf_id))
+
+@app.route('/bookshelf/<int:bookshelf_id>/remove/<int:book_id>', methods=['POST'])
+def remove_book_from_shelf(bookshelf_id, book_id):
+    # require logged in user
+    pid_cookie = request.cookies.get('profile_id')
+    if not pid_cookie:
+        return redirect(url_for('login'))
+    try:
+        pid = int(pid_cookie)
+    except Exception:
+        return redirect(url_for('login'))
+
+    # verify bookshelf exists and owner
+    try:
+        row = g.conn.execute(
+            text("SELECT profile_id FROM bookshelf WHERE bookshelf_id = :bsid"),
+            {"bsid": bookshelf_id}
+        ).fetchone()
+    except Exception as e:
+        print("bookshelf lookup error:", e)
+        abort(500)
+
+    if row is None:
+        abort(404)
+
+    owner = getattr(row, "_mapping", row).get("profile_id") if hasattr(getattr(row, "_mapping", row), "get") else row[0]
+    try:
+        if int(owner) != pid:
+            abort(403)
+    except Exception:
+        abort(403)
+
+    # delete mapping row
+    try:
+        res = g.conn.execute(
+            text("DELETE FROM contains_book WHERE bookshelf_id = :bsid AND book_id = :bid"),
+            {"bsid": bookshelf_id, "bid": book_id}
+        )
+        try:
+            g.conn.commit()
+        except Exception:
+            pass
+    except Exception as e:
+        print("remove from bookshelf db error:", e)
+        try:
+            g.conn.rollback()
+        except Exception:
+            pass
+
+    return redirect(url_for('view_bookshelf', bookshelf_id=bookshelf_id))
+
 @app.route('/logout', methods=['POST'])
 def logout():
+    # deletes cookies and redirects to home
     resp = make_response(redirect(url_for('index')))
     resp.delete_cookie('profile_id')
     resp.delete_cookie('username')

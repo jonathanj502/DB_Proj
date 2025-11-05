@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ shelf.name }} — Bookshelf</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header style="max-width:1000px;margin:12px auto;padding:0 16px;display:flex;align-items:center;">
+    <a href="{{ url_for('index') }}" style="margin-right:auto;">&larr; Home</a>
+    {% if request.cookies.get('profile_id') %}
+      <a href="{{ url_for('profile', profile_id=request.cookies.get('profile_id')) }}">
+        <img src="{{ url_for('static', filename='img/default-avatar.png') }}" alt="Profile" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
+      </a>
+    {% else %}
+      <a href="{{ url_for('login') }}">Log in</a>
+    {% endif %}
+  </header>
+
+  <main style="max-width:900px;margin:18px auto;padding:16px;">
+    <h1 style="margin:0 0 8px 0;">{{ shelf.name }}</h1>
+    <p style="color:#666;margin:0 0 12px 0;">
+      By <strong>{{ shelf.owner_username }}</strong>
+      • {{ shelf.created_at }}
+      {% if not shelf.is_public %} • private{% endif %}
+    </p>
+
+    {% if is_owner %}
+      <form method="post" action="{{ url_for('add_book_to_shelf', bookshelf_id=shelf.id) }}" style="margin:12px 0 0;display:flex;gap:8px;align-items:center;">
+        <input name="book_id" type="number" min="1" placeholder="Book ID" required style="padding:6px;border:1px solid #ddd;border-radius:4px;">
+        <button type="submit" style="padding:6px 10px;border-radius:4px;">Add</button>
+        <small style="color:#666;margin-left:8px;">Add by book id</small>
+      </form>
+    {% endif %}
+
+    {% if shelf.description %}
+      <p style="margin:12px 0;color:#444;">{{ shelf.description }}</p>
+    {% endif %}
+
+    <section style="margin-top:18px;">
+      <h2 style="margin-bottom:8px;">Books in this shelf</h2>
+      {% if books %}
+        <ul style="list-style:none;padding:0;margin:0;display:grid;gap:12px;">
+          {% for b in books %}
+            <li style="display:flex;gap:12px;align-items:center;padding:10px;border:1px solid #eee;border-radius:6px;">
+              <div style="width:72px;flex:0 0 72px;">
+                {% if b.image_url %}
+                  <img src="{{ b.image_url }}" alt="{{ b.title }}" style="width:72px;height:72px;object-fit:cover;border-radius:4px;">
+                {% else %}
+                  <div style="width:72px;height:72px;background:#f4f4f4;display:flex;align-items:center;justify-content:center;border-radius:4px;color:#999;">No image</div>
+                {% endif %}
+              </div>
+
+              <div style="flex:1;">
+                <a href="{{ url_for('book', book_id=b.id) }}" style="font-weight:600;">{{ b.title }}</a>
+                <div style="color:#666;font-size:0.9rem;margin-top:4px;">{{ b.published_year or 'N/A' }}</div>
+              </div>
+
+              {% if is_owner %}
+              <div style="flex:0 0 auto;margin-left:8px;">
+                <form method="post" action="{{ url_for('remove_book_from_shelf', bookshelf_id=shelf.id, book_id=b.id) }}"
+                      onsubmit="return confirm('Remove \"{{ b.title }}\" from this bookshelf?');" style="display:inline;">
+                  <button type="submit" style="background:#fff;border:0px solid #e0e0e0;color:#b00020;padding:6px 8px;border-radius:4px;cursor:pointer;">
+                    🗑️
+                  </button>
+                </form>
+              </div>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p style="color:#666;">No books in this bookshelf yet.</p>
+      {% endif %}
+    </section>
+
+    {% if is_owner %}
+      <p style="margin-top:14px;"><a href="{{ url_for('profile', profile_id=shelf.profile_id) }}">Back to your profile</a></p>
+    {% endif %}
+  </main>
+</body>
+</html>
