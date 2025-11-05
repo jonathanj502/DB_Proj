@@ -1,3 +1,14 @@
+{% macro render_stars(rating) -%}
+  {% if rating is none %}
+    —
+  {% else %}
+    {% set full = rating|float|int %}
+    {% for _ in range(full) %}★{% endfor %}
+    {% for _ in range(5 - full) %}☆{% endfor %}
+    <small style="color:#666;margin-left:6px;">({{ rating }})</small>
+  {% endif %}
+{%- endmacro %}
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -23,6 +34,14 @@
   </header>
 
   <main style="max-width:720px;margin:24px auto;padding:16px;">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <img src="{{ url_for('static', filename='img/default-avatar.png') }}" alt="{{ profile.username }}"
+           style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:1px solid #ddd;">
+      <div>
+        <h1 style="margin:0">{{ profile.username }}</h1>
+        <p style="margin:6px 0 0;color:#666">Joined: {{ profile.joined_at }}</p>
+      </div>
+    </div>
 
     {% if current_user_id and current_user_id != profile.profile_id %}
       <form method="post" style="margin-top:16px;">
@@ -47,29 +66,31 @@
       </form>
     {% endif %}
 
-    <!-- Followers -->
-    <details style="margin-top:1em;">
-      <summary style="cursor:pointer;font-weight:bold;">
-        Followers ({{ followers_count }})
-      </summary>
-      <ul>
-        {% for f in followers %}
-          <li><a href="{{ url_for('profile', profile_id=f.id) }}">{{ f.username }}</a></li>
-        {% endfor %}
-      </ul>
-    </details>
+    <div style="display:flex; gap:24px; margin-top:1em;">
+      <!-- Followers -->
+      <details style="flex:1;">
+        <summary style="cursor:pointer;font-weight:bold;">
+          Followers ({{ followers_count }})
+        </summary>
+        <ul>
+          {% for f in followers %}
+            <li><a href="{{ url_for('profile', profile_id=f.id) }}">{{ f.username }}</a></li>
+          {% endfor %}
+        </ul>
+      </details>
 
-    <!-- Following -->
-    <details style="margin-top:1em;">
-      <summary style="cursor:pointer;font-weight:bold;">
-        Following ({{ following_count }})
-      </summary>
-      <ul>
-        {% for f in following %}
-          <li><a href="{{ url_for('profile', profile_id=f.id) }}">{{ f.username }}</a></li>
-        {% endfor %}
-      </ul>
-    </details>
+      <!-- Following -->
+      <details style="flex:1;">
+        <summary style="cursor:pointer;font-weight:bold;">
+          Following ({{ following_count }})
+        </summary>
+        <ul>
+          {% for f in following %}
+            <li><a href="{{ url_for('profile', profile_id=f.id) }}">{{ f.username }}</a></li>
+          {% endfor %}
+        </ul>
+      </details>
+    </div>
 
     <!-- Favorite Authors -->
     <details style="margin-top:1em;">
@@ -90,7 +111,10 @@
       </summary>
       <ul>
         {% for s in bookshelves %}
-          <li><a href="/bookshelf/{{ s.id }}">{{ s.shelf_name }}</a></li>
+          <li>
+            <a href="/bookshelf/{{ s.id }}">{{ s.shelf_name }}</a>
+            — {{ s.book_count }} books
+          </li>
         {% endfor %}
       </ul>
     </details>
@@ -104,7 +128,7 @@
         {% for b in tracked_books %}
           <li>
             <a href="{{ url_for('book', book_id=b.id) }}">{{ b.title }}</a>
-            ({{ b.status }})
+            — Status: {{ b.status }}
           </li>
         {% endfor %}
       </ul>
@@ -117,22 +141,20 @@
       </summary>
       <ul>
         {% for r in reviews %}
-          <li>
+          <li style="margin-bottom:1em;">
             <a href="{{ url_for('book', book_id=r.id) }}#review-{{ profile.profile_id }}">
               {{ r.title }}
             </a>
-            {% if r.rating %} — Rated {{ r.rating }}{% endif %}
+            {% if r.rating %}
+              {{ render_stars(r.rating) }}
+            {% endif %}
+            {% if r.review_text %}
+              <div style="margin-top:4px; color:#444;">{{ r.review_text }}</div>
+            {% endif %}
           </li>
         {% endfor %}
       </ul>
     </details>
-
-    <!-- logout form -->
-    <form method="post" action="{{ url_for('logout') }}" style="margin-top:16px;">
-      <button type="submit" style="padding:8px 12px;border-radius:4px;border:1px solid #ccc;background:#fff;cursor:pointer;">
-        Log out
-      </button>
-    </form>
   </main>
 </body>
 </html>

@@ -436,18 +436,25 @@ def profile(profile_id):
         current_user_id = int(current_user_id)
     print(f"[DEBUG] Visiting profile {profile_id}, current_user_id={current_user_id}, method={request.method}")
 
-    # Handle follow/unfollow POST (same as before)...
+    # Handle follow/unfollow
     if request.method == 'POST' and current_user_id:
         action = request.form.get('action')
         with g.conn.begin():
             if action == 'follow':
                 g.conn.execute(
-                    text("INSERT INTO follows (follower_id, following_id) VALUES (:f, :t) ON CONFLICT DO NOTHING"),
+                    text("""
+                        INSERT INTO follows (follower_id, following_id)
+                        VALUES (:f, :t)
+                        ON CONFLICT DO NOTHING
+                    """),
                     {"f": current_user_id, "t": profile_id}
                 )
             elif action == 'unfollow':
                 g.conn.execute(
-                    text("DELETE FROM follows WHERE follower_id=:f AND following_id=:t"),
+                    text("""
+                        DELETE FROM follows
+                        WHERE follower_id = :f AND following_id = :t
+                    """),
                     {"f": current_user_id, "t": profile_id}
                 )
         return redirect(url_for('profile', profile_id=profile_id))
@@ -459,6 +466,7 @@ def profile(profile_id):
     ).fetchone()
     if row is None:
         abort(404)
+
     m = getattr(row, "_mapping", row)
     profile = {
         "profile_id": m.get("profile_id") if hasattr(m, "get") else row[0],
@@ -466,7 +474,7 @@ def profile(profile_id):
         "joined_at": m.get("joined_at") if hasattr(m, "get") else row[2],
     }
 
-    # Followers/following counts
+    # Counts
     followers_count = g.conn.execute(
         text("SELECT COUNT(*) FROM follows WHERE following_id = :pid"),
         {"pid": profile_id}
@@ -476,10 +484,11 @@ def profile(profile_id):
         {"pid": profile_id}
     ).scalar()
 
+    # Follow status
     is_following = False
     if current_user_id:
         is_following = g.conn.execute(
-            text("SELECT 1 FROM follows WHERE follower_id=:f AND following_id=:t"),
+            text("SELECT 1 FROM follows WHERE follower_id = :f AND following_id = :t"),
             {"f": current_user_id, "t": profile_id}
         ).fetchone() is not None
 
@@ -494,6 +503,7 @@ def profile(profile_id):
         {"pid": profile_id}
     ).fetchall()
 
+    # Following list
     following = g.conn.execute(
         text("""
             SELECT p.profile_id AS id, p.username
@@ -515,12 +525,14 @@ def profile(profile_id):
         {"pid": profile_id}
     ).fetchall()
 
-    # Bookshelves
+    # Bookshelves with book counts
     bookshelves = g.conn.execute(
         text("""
-            SELECT bookshelf_id AS id, shelf_name
-            FROM bookshelf
-            WHERE profile_id = :pid
+            SELECT s.bookshelf_id AS id, s.shelf_name, COUNT(cb.book_id) AS book_count
+            FROM bookshelf s
+            LEFT JOIN contains_book cb ON s.bookshelf_id = cb.bookshelf_id
+            WHERE s.profile_id = :pid
+            GROUP BY s.bookshelf_id, s.shelf_name
         """),
         {"pid": profile_id}
     ).fetchall()
