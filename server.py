@@ -645,9 +645,130 @@ def create_bookshelf():
 
     return redirect(url_for('profile', profile_id=pid))
 
-# deletes cookies and redirects to home
+@app.route('/bookshelf/<int:bookshelf_id>/add', methods=['POST'])
+def add_book_to_shelf(bookshelf_id):
+    # require logged in user
+    pid_cookie = request.cookies.get('profile_id')
+    if not pid_cookie:
+        return redirect(url_for('login'))
+    try:
+        pid = int(pid_cookie)
+    except Exception:
+        return redirect(url_for('login'))
+
+    # verify bookshelf exists and owner
+    try:
+        row = g.conn.execute(
+            text("SELECT profile_id FROM bookshelf WHERE bookshelf_id = :bsid"),
+            {"bsid": bookshelf_id}
+        ).fetchone()
+    except Exception as e:
+        print("bookshelf lookup error:", e)
+        abort(500)
+
+    if row is None:
+        abort(404)
+
+    owner = getattr(row, "_mapping", row).get("profile_id") if hasattr(getattr(row, "_mapping", row), "get") else row[0]
+    try:
+        if int(owner) != pid:
+            abort(403)
+    except Exception:
+        abort(403)
+
+    # parse book_id from form
+    book_id_raw = (request.form.get('book_id') or "").strip()
+    try:
+        book_id = int(book_id_raw)
+    except Exception:
+        return redirect(url_for('view_bookshelf', bookshelf_id=bookshelf_id))
+
+    # check book exists
+    try:
+        exists = g.conn.execute(text("SELECT 1 FROM book WHERE book_id = :bid"), {"bid": book_id}).fetchone()
+    except Exception as e:
+        print("book lookup error:", e)
+        return redirect(url_for('view_bookshelf', bookshelf_id=bookshelf_id))
+
+    if not exists:
+        return redirect(url_for('view_bookshelf', bookshelf_id=bookshelf_id))
+
+    # insert into contains_book (ignore if already present)
+    try:
+        g.conn.execute(
+            text("""
+                INSERT INTO contains_book (bookshelf_id, book_id)
+                VALUES (:bsid, :bid)
+                ON CONFLICT (bookshelf_id, book_id) DO NOTHING
+            """),
+            {"bsid": bookshelf_id, "bid": book_id}
+        )
+        try:
+            g.conn.commit()
+        except Exception:
+            pass
+    except Exception as e:
+        print("add to bookshelf db error:", e)
+        try:
+            g.conn.rollback()
+        except Exception:
+            pass
+
+    return redirect(url_for('view_bookshelf', bookshelf_id=bookshelf_id))
+
+@app.route('/bookshelf/<int:bookshelf_id>/remove/<int:book_id>', methods=['POST'])
+def remove_book_from_shelf(bookshelf_id, book_id):
+    # require logged in user
+    pid_cookie = request.cookies.get('profile_id')
+    if not pid_cookie:
+        return redirect(url_for('login'))
+    try:
+        pid = int(pid_cookie)
+    except Exception:
+        return redirect(url_for('login'))
+
+    # verify bookshelf exists and owner
+    try:
+        row = g.conn.execute(
+            text("SELECT profile_id FROM bookshelf WHERE bookshelf_id = :bsid"),
+            {"bsid": bookshelf_id}
+        ).fetchone()
+    except Exception as e:
+        print("bookshelf lookup error:", e)
+        abort(500)
+
+    if row is None:
+        abort(404)
+
+    owner = getattr(row, "_mapping", row).get("profile_id") if hasattr(getattr(row, "_mapping", row), "get") else row[0]
+    try:
+        if int(owner) != pid:
+            abort(403)
+    except Exception:
+        abort(403)
+
+    # delete mapping row
+    try:
+        res = g.conn.execute(
+            text("DELETE FROM contains_book WHERE bookshelf_id = :bsid AND book_id = :bid"),
+            {"bsid": bookshelf_id, "bid": book_id}
+        )
+        try:
+            g.conn.commit()
+        except Exception:
+            pass
+    except Exception as e:
+        print("remove from bookshelf db error:", e)
+        try:
+            g.conn.rollback()
+        except Exception:
+            pass
+
+    return redirect(url_for('view_bookshelf', bookshelf_id=bookshelf_id))
+
 @app.route('/logout', methods=['POST'])
 def logout():
+    # deletes cookies and redirects to home
     resp = make_response(redirect(url_for('index')))
     resp.delete_cookie('profile_id')
     resp.delete_cookie('username')
