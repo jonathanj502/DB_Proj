@@ -57,14 +57,15 @@
       {% endif %}
     </section>
 
-    <!-- logout form -->
+    <!-- logout form visible only to profile owner -->
+    {% if is_owner %}
     <form method="post" action="{{ url_for('logout') }}" style="margin-top:16px;">
       <button type="submit" style="padding:8px 12px;border-radius:4px;border:1px solid #ccc;background:#fff;cursor:pointer;">
         Log out
       </button>
     </form>
-
-    <!-- add more profile details here -->
+    {% endif %}
+    
   </main>
 </body>
 </html>
