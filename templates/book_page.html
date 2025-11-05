@@ -51,12 +51,170 @@
           <li><strong>Language:</strong> {{ book.language or 'N/A' }}</li>
         </ul>
       </div>
-
-      
     </div>
+
     <!-- Reviews -->
     <div class="reviews-section">
       <h3>Reviews</h3>
+
+      {# review form shown only when logged in #}
+      {% if request.cookies.get('profile_id') %}
+        <form method="post" action="{{ url_for('post_review', book_id=book.id) }}" class="review-form">
+          <div>
+            <label for="rating">Rating</label><br>
+
+            <!-- hidden field that will be submitted -->
+            <input type="hidden" id="rating" name="rating" value="">
+
+            <!-- clickable star row -->
+            <div class="star-input" role="radiogroup" aria-label="Rating">
+              <span class="star" data-value="1" role="radio" aria-checked="false" tabindex="0">☆</span>
+              <span class="star" data-value="2" role="radio" aria-checked="false" tabindex="0">☆</span>
+              <span class="star" data-value="3" role="radio" aria-checked="false" tabindex="0">☆</span>
+              <span class="star" data-value="4" role="radio" aria-checked="false" tabindex="0">☆</span>
+              <span class="star" data-value="5" role="radio" aria-checked="false" tabindex="0">☆</span>
+            </div>
+
+            <style>
+              .star-input { display:inline-flex; gap:6px; align-items:center; font-size:1.4rem; }
+              .star-input .star { cursor:pointer; user-select:none; color:#ccc; transition:color .12s ease; outline:none; }
+              .star-input .star.hover,
+              .star-input .star.selected { color:#f5b301; }
+              .star-input .star:focus { box-shadow:0 0 0 3px rgba(245,179,1,0.12); border-radius:4px; }
+            </style>
+
+            <script>
+              (function(){
+                const stars = Array.from(document.querySelectorAll('.star-input .star'));
+                const hidden = document.getElementById('rating');
+                let selected = 0;
+
+                function updateVisual(n){
+                  stars.forEach((s, i) => {
+                    s.classList.toggle('selected', i < n);
+                    s.setAttribute('aria-checked', i < n ? 'true' : 'false');
+                    s.textContent = i < n ? '★' : '☆';
+                  });
+                }
+
+                stars.forEach((star, idx) => {
+                  const val = idx + 1;
+
+                  star.addEventListener('click', () => {
+                    selected = val;
+                    hidden.value = selected;
+                    updateVisual(selected);
+                  });
+
+                  star.addEventListener('keydown', (ev) => {
+                    if (ev.key === 'Enter' || ev.key === ' ') {
+                      ev.preventDefault();
+                      selected = val;
+                      hidden.value = selected;
+                      updateVisual(selected);
+                    }
+                    if (ev.key === 'ArrowLeft' || ev.key === 'ArrowDown') {
+                      ev.preventDefault();
+                      const prev = Math.max(1, (selected || val) - 1);
+                      selected = prev;
+                      hidden.value = selected;
+                      updateVisual(selected);
+                      stars[selected-1].focus();
+                    }
+                    if (ev.key === 'ArrowRight' || ev.key === 'ArrowUp') {
+                      ev.preventDefault();
+                      const next = Math.min(5, (selected || val) + 1);
+                      selected = next;
+                      hidden.value = selected;
+                      updateVisual(selected);
+                      stars[selected-1].focus();
+                    }
+                  });
+
+                  star.addEventListener('mouseover', () => {
+                    const n = val;
+                    stars.forEach((s, i) => {
+                      s.classList.toggle('hover', i < n);
+                      s.textContent = i < n ? '★' : '☆';
+                    });
+                  });
+
+                  star.addEventListener('mouseout', () => {
+                    stars.forEach(s => s.classList.remove('hover'));
+                    updateVisual(selected);
+                  });
+                });
+
+                // initialize if there's a preselected value (e.g. editing)
+                if (hidden.value) {
+                  selected = parseInt(hidden.value, 10) || 0;
+                  updateVisual(selected);
+                }
+              })();
+            </script>
+          </div>
+          
+          <div>
+            <label for="review_text">Your review</label><br>
+            <textarea id="review_text" name="review_text" rows="4" cols="60" placeholder="Write your review (optional)"></textarea>
+          </div>
+          <div style="margin-top:8px;">
+            <button type="submit">Submit review</button>
+          </div>
+          <p style="font-size:0.9em;color:#666;margin-top:6px;">
+            Note: either a rating or review text is required.
+          </p>
+        </form>
+      {% else %}
+        <p><a href="{{ url_for('login') }}">Log in</a> to write a review.</p>
+      {% endif %}
+
+      <hr>
+
+      {# helper to render stars for a stored rating #}
+      {% macro render_stars(rating) -%}
+        {% if rating is none %}
+          —
+        {% else %}
+          {% set full = rating|float|int %}
+          {% for _ in range(full) %}★{% endfor %}
+          {% for _ in range(5 - full) %}☆{% endfor %}
+          <small style="color:#666;margin-left:6px;">({{ rating }})</small>
+        {% endif %}
+      {%- endmacro %}
+
+      {% if reviews %}
+        {% for r in reviews %}
+          <div class="review">
+            <div class="review-meta" style="display:flex;align-items:center;gap:12px;">
+              <strong>{{ r.username or ('User ' ~ r.profile_id) }}</strong>
+              <small style="color:#666;">{{ r.reviewed_at }}</small>
+              <span style="margin-left:auto;color:#333;">{{ render_stars(r.rating) }}</span>
+            </div>
+            {% if r.review_text %}
+              <p class="review-text" style="margin:6px 0 4px;">{{ r.review_text }}</p>
+            {% endif %}
+
+            <div class="review-actions" style="display:flex;gap:8px;align-items:center;">
+              <form method="post" action="{{ url_for('like_review', book_id=book.id, profile_id=r.profile_id) }}">
+                <button type="submit">Like ({{ r.likes_count or 0 }})</button>
+              </form>
+
+              {# allow the reviewer to delete/replace their review if they are the logged in user #}
+              {% if request.cookies.get('profile_id') and request.cookies.get('profile_id')|int == r.profile_id %}
+                <form method="post" action="{{ url_for('delete_review', book_id=book.id) }}" style="margin-left:8px;">
+                  <button type="submit">Delete</button>
+                </form>
+              {% endif %}
+            </div>
+            <hr style="margin-top:12px;">
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>No reviews yet. Be the first to review this book!</p>
+      {% endif %}
+    </div>
+
   {% endif %}
 </body>
 </html>

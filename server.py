@@ -257,7 +257,127 @@ def book(book_id):
     cursor.close()
     book["authors"] = authors
     
-    return render_template("book_page.html", book=book)
+    # load reviews for this book (pass to template)
+    try:
+        rev_cur = g.conn.execute(
+            text("""
+                SELECT r.profile_id, r.rating, r.review_text, r.reviewed_at, r.likes_count, p.username
+                FROM reviews r
+                LEFT JOIN profile p ON r.profile_id = p.profile_id
+                WHERE r.book_id = :book_id
+                ORDER BY r.reviewed_at DESC
+            """),
+            {"book_id": book_id}
+        )
+        reviews = []
+        for rr in rev_cur:
+            rm = getattr(rr, "_mapping", rr)
+            reviews.append({
+                "profile_id": (rm.get("profile_id") if hasattr(rm, "get") else rr[0]),
+                "rating": (rm.get("rating") if hasattr(rm, "get") else rr[1]),
+                "review_text": (rm.get("review_text") if hasattr(rm, "get") else rr[2]),
+                "reviewed_at": (rm.get("reviewed_at") if hasattr(rm, "get") else rr[3]),
+                "likes_count": (rm.get("likes_count") if hasattr(rm, "get") else rr[4]) or 0,
+                "username": (rm.get("username") if hasattr(rm, "get") else rr[5]),
+            })
+        rev_cur.close()
+    except Exception as e:
+        print("book reviews db error:", e)
+        reviews = []
+
+    return render_template("book_page.html", book=book, reviews=reviews)
+
+# --- Review endpoints required by book_page.html ---
+@app.route('/book/<int:book_id>/review', methods=['POST'])
+def post_review(book_id):
+    # must be logged in via cookie
+    pid = request.cookies.get('profile_id')
+    if not pid:
+        return redirect(url_for('login'))
+
+    review_text = request.form.get('review_text', '').strip()
+    rating_raw = request.form.get('rating', '').strip()
+
+    rating = None
+    if rating_raw != '':
+        try:
+            rating = round(float(rating_raw), 1)
+            if rating < 0 or rating > 5:
+                return render_template('book_page.html', book={}, reviews=[], error="Rating must be between 0 and 5.")
+        except Exception:
+            return render_template('book_page.html', book={}, reviews=[], error="Invalid rating value.")
+
+    if rating is None and not review_text:
+        return render_template('book_page.html', book={}, reviews=[], error="Either rating or review text required.")
+
+    try:
+        g.conn.execute(
+            text("""
+                INSERT INTO reviews (profile_id, book_id, rating, review_text, reviewed_at)
+                VALUES (:pid, :bid, :rating, :text, CURRENT_TIMESTAMP)
+                ON CONFLICT (profile_id, book_id)
+                DO UPDATE SET rating = EXCLUDED.rating, review_text = EXCLUDED.review_text, reviewed_at = CURRENT_TIMESTAMP
+            """),
+            {"pid": int(pid), "bid": book_id, "rating": rating, "text": review_text}
+        )
+        try:
+            g.conn.commit()
+        except Exception:
+            pass
+    except Exception as e:
+        print("post_review db error:", e)
+        try:
+            g.conn.rollback()
+        except Exception:
+            pass
+        return render_template('book_page.html', book={}, reviews=[], error="Could not post review.")
+
+    return redirect(url_for('book', book_id=book_id))
+
+
+@app.route('/book/<int:book_id>/review/<int:profile_id>/like', methods=['POST'])
+def like_review(book_id, profile_id):
+    try:
+        g.conn.execute(
+            text("UPDATE reviews SET likes_count = COALESCE(likes_count,0) + 1 WHERE book_id = :bid AND profile_id = :pid"),
+            {"bid": book_id, "pid": profile_id}
+        )
+        try:
+            g.conn.commit()
+        except Exception:
+            pass
+    except Exception as e:
+        print("like_review db error:", e)
+        try:
+            g.conn.rollback()
+        except Exception:
+            pass
+    return redirect(url_for('book', book_id=book_id))
+
+
+@app.route('/book/<int:book_id>/review/delete', methods=['POST'])
+def delete_review(book_id):
+    pid = request.cookies.get('profile_id')
+    if not pid:
+        return redirect(url_for('login'))
+
+    try:
+        g.conn.execute(
+            text("DELETE FROM reviews WHERE book_id = :bid AND profile_id = :pid"),
+            {"bid": book_id, "pid": int(pid)}
+        )
+        try:
+            g.conn.commit()
+        except Exception:
+            pass
+    except Exception as e:
+        print("delete_review db error:", e)
+        try:
+            g.conn.rollback()
+        except Exception:
+            pass
+
+    return redirect(url_for('book', book_id=book_id))
 
 @app.route('/author/<int:author_id>')
 def author(author_id):
