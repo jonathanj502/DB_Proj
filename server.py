@@ -285,9 +285,120 @@ def book(book_id):
         print("book reviews db error:", e)
         reviews = []
 
-    return render_template("book_page.html", book=book, reviews=reviews)
+    # --- Tracking: check if current viewer is tracking this book ---
+    tracking = None
+    viewer = request.cookies.get('profile_id')
+    if viewer:
+        try:
+            tr = g.conn.execute(
+                text("""
+                    SELECT profile_id, status, current_page, start_date, finish_date
+                    FROM is_tracking
+                    WHERE profile_id = :pid AND book_id = :bid
+                """),
+                {"pid": int(viewer), "bid": book_id}
+            ).fetchone()
+            if tr:
+                tm = getattr(tr, "_mapping", tr)
+                tracking = {
+                    "profile_id": tm.get("profile_id") if hasattr(tm, "get") else tr[0],
+                    "status": tm.get("status") if hasattr(tm, "get") else tr[1],
+                    "current_page": tm.get("current_page") if hasattr(tm, "get") else tr[2],
+                    "start_date": tm.get("start_date") if hasattr(tm, "get") else tr[3],
+                    "finish_date": tm.get("finish_date") if hasattr(tm, "get") else tr[4],
+                }
+        except Exception as e:
+            print("tracking lookup error:", e)
+            tracking = None
 
-# --- Review endpoints required by book_page.html ---
+    return render_template("book_page.html", book=book, reviews=reviews, tracking=tracking)
+
+@app.route('/book/<int:book_id>/track', methods=['POST'])
+def track_book(book_id):
+    pid_cookie = request.cookies.get('profile_id')
+    if not pid_cookie:
+        return redirect(url_for('login'))
+    try:
+        pid = int(pid_cookie)
+    except Exception:
+        return redirect(url_for('login'))
+
+    status = (request.form.get('status') or 'reading').strip()
+    current_page_raw = request.form.get('current_page', '').strip()
+    current_page = None
+    if current_page_raw != '':
+        try:
+            current_page = int(current_page_raw)
+            if current_page < 0:
+                current_page = 0
+        except Exception:
+            current_page = None
+
+    start_date = request.form.get('start_date') or None
+    finish_date = request.form.get('finish_date') or None
+
+    try:
+        g.conn.execute(
+            text("""
+                INSERT INTO is_tracking (profile_id, book_id, status, current_page, start_date, finish_date)
+                VALUES (:pid, :bid, :status, :current_page, :start_date, :finish_date)
+                ON CONFLICT (profile_id, book_id)
+                DO UPDATE SET status = EXCLUDED.status,
+                              current_page = EXCLUDED.current_page,
+                              start_date = EXCLUDED.start_date,
+                              finish_date = EXCLUDED.finish_date
+            """),
+            {
+                "pid": pid,
+                "bid": book_id,
+                "status": status,
+                "current_page": current_page,
+                "start_date": start_date,
+                "finish_date": finish_date
+            }
+        )
+        try:
+            g.conn.commit()
+        except Exception:
+            pass
+    except Exception as e:
+        print("track_book db error:", e)
+        try:
+            g.conn.rollback()
+        except Exception:
+            pass
+
+    return redirect(url_for('book', book_id=book_id))
+
+
+@app.route('/book/<int:book_id>/untrack', methods=['POST'])
+def untrack_book(book_id):
+    pid_cookie = request.cookies.get('profile_id')
+    if not pid_cookie:
+        return redirect(url_for('login'))
+    try:
+        pid = int(pid_cookie)
+    except Exception:
+        return redirect(url_for('login'))
+
+    try:
+        g.conn.execute(
+            text("DELETE FROM is_tracking WHERE profile_id = :pid AND book_id = :bid"),
+            {"pid": pid, "bid": book_id}
+        )
+        try:
+            g.conn.commit()
+        except Exception:
+            pass
+    except Exception as e:
+        print("untrack db error:", e)
+        try:
+            g.conn.rollback()
+        except Exception:
+            pass
+
+    return redirect(url_for('book', book_id=book_id))
+
 @app.route('/book/<int:book_id>/review', methods=['POST'])
 def post_review(book_id):
     # must be logged in via cookie

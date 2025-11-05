@@ -50,6 +50,59 @@
           <li><strong>Pages:</strong> {{ book.page_count or 'N/A' }}</li>
           <li><strong>Language:</strong> {{ book.language or 'N/A' }}</li>
         </ul>
+
+        <!-- Tracking UI -->
+        {% if request.cookies.get('profile_id') %}
+          <div style="margin-top:12px;">
+            {% if tracking %}
+              <div style="margin-bottom:8px;color:#333;">
+                Tracking: <strong>{{ tracking.status }}</strong>{% if tracking.current_page %} — page {{ tracking.current_page }}{% endif %}
+              </div>
+
+              <form method="post" action="{{ url_for('track_book', book_id=book.id) }}" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                <label style="display:flex;gap:6px;align-items:center;">
+                  <span>Status</span>
+                  <select name="status" style="padding:6px;border:1px solid #ddd;border-radius:4px;">
+                    {% for s in ['planning','reading','on-hold','finished'] %}
+                      <option value="{{ s }}" {% if tracking.status == s %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                  </select>
+                </label>
+
+                <label style="display:flex;gap:6px;align-items:center;">
+                  <span>Page</span>
+                  <input name="current_page" type="number" min="0" value="{{ tracking.current_page or 0 }}" style="width:96px;padding:6px;border:1px solid #ddd;border-radius:4px;">
+                </label>
+
+                <button type="submit" style="padding:6px 10px;border-radius:4px;">Save</button>
+              </form>
+
+              <form method="post" action="{{ url_for('untrack_book', book_id=book.id) }}" style="margin-top:8px;">
+                <button type="submit" style="background:#fff;border:1px solid #e0e0e0;color:#b00020;padding:6px 8px;border-radius:4px;cursor:pointer;">
+                  Stop tracking
+                </button>
+              </form>
+
+            {% else %}
+              <form method="post" action="{{ url_for('track_book', book_id=book.id) }}" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                <label style="display:flex;gap:6px;align-items:center;">
+                  <span>Status</span>
+                  <select name="status" style="padding:6px;border:1px solid #ddd;border-radius:4px;">
+                    <option value="reading" selected>reading</option>
+                    <option value="planning">planning</option>
+                    <option value="on-hold">on-hold</option>
+                    <option value="finished">finished</option>
+                  </select>
+                </label>
+
+                <button type="submit" style="padding:6px 10px;border-radius:4px;">Track</button>
+              </form>
+            {% endif %}
+          </div>
+        {% else %}
+          <p style="margin-top:12px;"><a href="{{ url_for('login') }}">Log in</a> to track this book.</p>
+        {% endif %}
+
       </div>
     </div>
 
