@@ -66,9 +66,9 @@
       </form>
     {% endif %}
 
-    <div style="display:flex; gap:24px; margin-top:1em;">
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px; margin-top:1em;">
       <!-- Followers -->
-      <details style="flex:1;">
+      <details>
         <summary style="cursor:pointer;font-weight:bold;">
           Followers ({{ followers_count }})
         </summary>
@@ -80,7 +80,7 @@
       </details>
 
       <!-- Following -->
-      <details style="flex:1;">
+      <details>
         <summary style="cursor:pointer;font-weight:bold;">
           Following ({{ following_count }})
         </summary>
@@ -90,56 +90,56 @@
           {% endfor %}
         </ul>
       </details>
+
+      <!-- Book Reviews -->
+      <details>
+        <summary style="cursor:pointer;font-weight:bold;">
+          Reviews ({{ reviews|length }})
+        </summary>
+        <ul>
+          {% for r in reviews %}
+            <li style="margin-bottom:1em;">
+              <a href="{{ url_for('book', book_id=r.id) }}#review-{{ profile.profile_id }}">
+                {{ r.title }}
+              </a>
+              {% if r.rating %}
+                {{ render_stars(r.rating) }}
+              {% endif %}
+              {% if r.review_text %}
+                <div style="margin-top:4px; color:#444;">{{ r.review_text }}</div>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </details>
+
+      <!-- Favorite Authors -->
+      <details>
+        <summary style="cursor:pointer;font-weight:bold;">
+          Favorite Authors ({{ favorite_authors|length }})
+        </summary>
+        <ul>
+          {% for a in favorite_authors %}
+            <li><a href="{{ url_for('author', author_id=a.id) }}">{{ a.name }}</a></li>
+          {% endfor %}
+        </ul>
+      </details>
+
+      <!-- Tracked Books -->
+      <details>
+        <summary style="cursor:pointer;font-weight:bold;">
+          Tracked Books ({{ tracked_books|length }})
+        </summary>
+        <ul>
+          {% for b in tracked_books %}
+            <li>
+              <a href="{{ url_for('book', book_id=b.id) }}">{{ b.title }}</a>
+              — Status: {{ b.status }}
+            </li>
+          {% endfor %}
+        </ul>
+      </details>
     </div>
-
-    <!-- Favorite Authors -->
-    <details style="margin-top:1em;">
-      <summary style="cursor:pointer;font-weight:bold;">
-        Favorite Authors ({{ favorite_authors|length }})
-      </summary>
-      <ul>
-        {% for a in favorite_authors %}
-          <li><a href="{{ url_for('author', author_id=a.id) }}">{{ a.name }}</a></li>
-        {% endfor %}
-      </ul>
-    </details>
-
-    <!-- Tracked Books -->
-    <details style="margin-top:1em;">
-      <summary style="cursor:pointer;font-weight:bold;">
-        Tracked Books ({{ tracked_books|length }})
-      </summary>
-      <ul>
-        {% for b in tracked_books %}
-          <li>
-            <a href="{{ url_for('book', book_id=b.id) }}">{{ b.title }}</a>
-            — Status: {{ b.status }}
-          </li>
-        {% endfor %}
-      </ul>
-    </details>
-
-    <!-- Book Reviews -->
-    <details style="margin-top:1em;">
-      <summary style="cursor:pointer;font-weight:bold;">
-        Reviews ({{ reviews|length }})
-      </summary>
-      <ul>
-        {% for r in reviews %}
-          <li style="margin-bottom:1em;">
-            <a href="{{ url_for('book', book_id=r.id) }}#review-{{ profile.profile_id }}">
-              {{ r.title }}
-            </a>
-            {% if r.rating %}
-              {{ render_stars(r.rating) }}
-            {% endif %}
-            {% if r.review_text %}
-              <div style="margin-top:4px; color:#444;">{{ r.review_text }}</div>
-            {% endif %}
-          </li>
-        {% endfor %}
-      </ul>
-    </details>
 
     <!-- add bookshelves list -->
     <section style="margin-top:20px;">
