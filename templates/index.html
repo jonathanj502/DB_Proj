@@ -78,10 +78,13 @@
 
           {% elif b.type == "author" %}
             <div class="info">
-              <h2>{{ b.title }}</h2>
+              <a href="{{ url_for('author', author_id=b.id) }}">
+                <h2>{{ b.title }}</h2>
+              </a>
               <p>Nationality: {{ b.extra }}</p>
               <p>Born: {{ b.published_year }}</p>
             </div>
+
 
           {% elif b.type == "profile" %}
             <div class="info">
