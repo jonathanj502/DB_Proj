@@ -105,43 +105,113 @@ def index():
 
 @app.route('/search', methods=['GET'])
 def search():
-    # DEBUG: this is debugging code to see what request looks like
     print("SEARCH ABC")
     print(request.args)
 
-    # Search by title or author
-    q = request.args.get('q').strip()
-    find_book_command = text('''
-        SELECT
-            b.book_id AS id,
-            b.title AS title,
-            b.publication_year AS published_year,
-            b.image_url AS image_url,
-            COALESCE(string_agg(a.name, ', '), '') AS authors
-        FROM book b
-        LEFT JOIN written_by wb ON b.book_id = wb.book_id
-        LEFT JOIN author a ON wb.author_id = a.author_id
-        WHERE b.title ILIKE :p OR a.name ILIKE :p
-        GROUP BY b.book_id, b.title, b.publication_year, b.image_url
-        ORDER BY b.publication_year DESC NULLS LAST
-        LIMIT 50
-    ''')
-    cursor = g.conn.execute(find_book_command, {"p": f"%{q}%"})
+    q = (request.args.get('q') or "").strip()
+    mode = request.args.get('mode', 'title')
 
-    # Append all results to books list
-    books = []
-    for row in cursor:
-        # row = (id, title, published_year, image_url, authors, author_ids)
-        books.append({
-            "id": row[0],
-            "title": row[1],
-            "authors": row[4],
-            "published_year": row[2],
-            "image_url": row[3],
-        })
-    cursor.close()
+    results = []
 
-    return render_template("index.html", results=books, query=q)
+    if not q:
+        return render_template("index.html", results=[], query=q, mode=mode)
+
+    if mode == "title":
+        # Search books by title
+        sql = text('''
+            SELECT
+                b.book_id AS id,
+                b.title AS title,
+                b.publication_year AS published_year,
+                b.image_url AS image_url,
+                COALESCE(string_agg(a.name, ', '), '') AS authors
+            FROM book b
+            LEFT JOIN written_by wb ON b.book_id = wb.book_id
+            LEFT JOIN author a ON wb.author_id = a.author_id
+            WHERE b.title ILIKE :p
+            GROUP BY b.book_id, b.title, b.publication_year, b.image_url
+            ORDER BY b.publication_year DESC NULLS LAST
+            LIMIT 50
+        ''')
+        cursor = g.conn.execute(sql, {"p": f"%{q}%"})
+        for row in cursor:
+            results.append({
+                "id": row.id,
+                "title": row.title,
+                "authors": row.authors,
+                "published_year": row.published_year,
+                "image_url": row.image_url,
+                "type": "book"
+            })
+        cursor.close()
+
+    elif mode == "author":
+        # Search authors
+        sql = text('''
+            SELECT author_id AS id, name, birthday, nationality
+            FROM author
+            WHERE name ILIKE :p
+            ORDER BY name
+            LIMIT 50
+        ''')
+        cursor = g.conn.execute(sql, {"p": f"%{q}%"})
+        for row in cursor:
+            results.append({
+                "id": row.id,
+                "title": row.name,
+                "authors": None,
+                "published_year": row.birthday,
+                "image_url": None,
+                "extra": row.nationality,
+                "type": "author"
+            })
+        cursor.close()
+
+    elif mode == "profile":
+        # Search user profiles
+        sql = text('''
+            SELECT profile_id AS id, username, joined_at
+            FROM profile
+            WHERE username ILIKE :p
+            ORDER BY joined_at DESC
+            LIMIT 50
+        ''')
+        cursor = g.conn.execute(sql, {"p": f"%{q}%"})
+        for row in cursor:
+            results.append({
+                "id": row.id,
+                "title": row.username,
+                "authors": None,
+                "published_year": row.joined_at,
+                "image_url": url_for('static', filename='img/default-avatar.png'),
+                "type": "profile"
+            })
+        cursor.close()
+
+    elif mode == "bookshelf":
+        # Search bookshelves
+        sql = text('''
+            SELECT bs.bookshelf_id AS id, bs.shelf_name, bs.description, p.username
+            FROM bookshelf bs
+            JOIN profile p ON bs.profile_id = p.profile_id
+            WHERE bs.shelf_name ILIKE :p OR bs.description ILIKE :p
+            ORDER BY bs.created_at DESC
+            LIMIT 50
+        ''')
+        cursor = g.conn.execute(sql, {"p": f"%{q}%"})
+        for row in cursor:
+            results.append({
+                "id": row.id,
+                "title": row.shelf_name,
+                "authors": row.username,   # owner
+                "published_year": None,
+                "image_url": None,
+                "extra": row.description,
+                "type": "bookshelf"
+            })
+        cursor.close()
+
+    return render_template("index.html", results=results, query=q, mode=mode)
 
 @app.route('/book/<int:book_id>')
 def book(book_id):

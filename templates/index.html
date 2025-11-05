@@ -25,32 +25,80 @@
   <div class="c">
     <!-- Centered search form -->
     <form action="/search" method="get" role="search" aria-label="Book search">
-      <input type="search" name="q" placeholder="e.g. The Hunger Games, Suzanne Collins">
+      <input type="search" name="q" placeholder="e.g. The Hunger Games, Suzanne Collins"
+        value="{{ query|default('') }}" required aria-required="true">
+      
+      <br>
+      <!-- Radio button group -->
+      <fieldset style="margin-top: 1em;">
+        <legend>Search for:</legend>
+        <label>
+          <input type="radio" name="mode" value="title"
+                {% if mode == 'title' %}checked{% endif %}>
+          Book Title
+        </label>
+        <label>
+          <input type="radio" name="mode" value="author"
+                {% if mode == 'author' %}checked{% endif %}>
+          Author
+        </label>
+        <label>
+          <input type="radio" name="mode" value="profile"
+                {% if mode == 'profile' %}checked{% endif %}>
+          User Profile
+        </label>
+        <label>
+          <input type="radio" name="mode" value="bookshelf"
+                {% if mode == 'bookshelf' %}checked{% endif %}>
+          Bookshelf
+        </label>
+      </fieldset>
+      
+      <br>
       <button type="submit">Search</button>
     </form>
   </div>
 
   {% if results %}
-  <div class="results" aria-live="polite">
-    {% for b in results %}
-      <div class="result-item">
-        {% if b.image_url %}
-          <a href="{{ url_for('book', book_id=b.id) }}">
-            <img class="thumb" src="{{ b.image_url }}" alt="{{ b.title }}" loading="lazy"
-                onerror="this.style.display='none'">
-          </a>
-        {% endif %}
-        <div class="info">
-          <a href="{{ url_for('book', book_id=b.id) }}">
-            <h2>{{ b.title }}</h2>
-          </a>
-          <p>By {{ b.authors }}</p>
-          
-          <p>Published {{ b.published_year }}</p>
+    <div class="results" aria-live="polite">
+      {% for b in results %}
+        <div class="result-item">
+          {% if b.type == "book" %}
+            {% if b.image_url %}
+              <a href="{{ url_for('book', book_id=b.id) }}">
+                <img class="thumb" src="{{ b.image_url }}" alt="{{ b.title }}" loading="lazy"
+                    onerror="this.style.display='none'">
+              </a>
+            {% endif %}
+            <div class="info">
+              <a href="{{ url_for('book', book_id=b.id) }}"><h2>{{ b.title }}</h2></a>
+              <p>By {{ b.authors }}</p>
+              <p>Published {{ b.published_year }}</p>
+            </div>
+
+          {% elif b.type == "author" %}
+            <div class="info">
+              <h2>{{ b.title }}</h2>
+              <p>Nationality: {{ b.extra }}</p>
+              <p>Born: {{ b.published_year }}</p>
+            </div>
+
+          {% elif b.type == "profile" %}
+            <div class="info">
+              <a href="{{ url_for('profile', profile_id=b.id) }}"><h2>{{ b.title }}</h2></a>
+              <p>Joined: {{ b.published_year }}</p>
+            </div>
+
+          {% elif b.type == "bookshelf" %}
+            <div class="info">
+              <h2>{{ b.title }}</h2>
+              <p>Owner: {{ b.authors }}</p>
+              <p>{{ b.extra }}</p>
+            </div>
+          {% endif %}
         </div>
-      </div>
-    {% endfor %}
-  </div>
+      {% endfor %}
+    </div>
   {% else %}
     {% if query %}
       <p style="text-align:center;margin-top:20px">No results for "{{ query }}".</p>
