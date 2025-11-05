@@ -94,7 +94,9 @@
 
           {% elif b.type == "bookshelf" %}
             <div class="info">
-              <h2>{{ b.title }}</h2>
+              <a href="{{ url_for('view_bookshelf', bookshelf_id=b.id) }}">
+                <h2>{{ b.title }}</h2>
+              </a>
               <p>Owner: {{ b.authors }}</p>
               <p>{{ b.extra }}</p>
             </div>
