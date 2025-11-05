@@ -187,26 +187,42 @@
         {% for r in reviews %}
           <div class="review">
             <div class="review-meta" style="display:flex;align-items:center;gap:12px;">
-              <strong>{{ r.username or ('User ' ~ r.profile_id) }}</strong>
+              <strong>
+                <a href="{{ url_for('profile', profile_id=r.profile_id) }}">
+                  {{ r.username or ('User ' ~ r.profile_id) }}
+                </a>
+              </strong>
               <small style="color:#666;">{{ r.reviewed_at }}</small>
-              <span style="margin-left:auto;color:#333;">{{ render_stars(r.rating) }}</span>
+              <span style="margin-left:auto;color:#333;">
+                {{ render_stars(r.rating) }}
+              </span>
             </div>
+
             {% if r.review_text %}
-              <p class="review-text" style="margin:6px 0 4px;">{{ r.review_text }}</p>
+              <p class="review-text" style="margin:6px 0 4px;">
+                {{ r.review_text }}
+              </p>
             {% endif %}
 
             <div class="review-actions" style="display:flex;gap:8px;align-items:center;">
-              <form method="post" action="{{ url_for('like_review', book_id=book.id, profile_id=r.profile_id) }}">
-                <button type="submit">Like ({{ r.likes_count or 0 }})</button>
+              <form
+                method="post"
+                action="{{ url_for('like_review', book_id=book.id, profile_id=r.profile_id) }}">
+                <button type="submit">
+                  Like ({{ r.likes_count or 0 }})
+                </button>
               </form>
 
-              {# allow the reviewer to delete/replace their review if they are the logged in user #}
               {% if request.cookies.get('profile_id') and request.cookies.get('profile_id')|int == r.profile_id %}
-                <form method="post" action="{{ url_for('delete_review', book_id=book.id) }}" style="margin-left:8px;">
+                <form
+                  method="post"
+                  action="{{ url_for('delete_review', book_id=book.id) }}"
+                  style="margin-left:8px;">
                   <button type="submit">Delete</button>
                 </form>
               {% endif %}
             </div>
+
             <hr style="margin-top:12px;">
           </div>
         {% endfor %}
