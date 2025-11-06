@@ -49,6 +49,16 @@
           <li><strong>Published:</strong> {{ book.published_year or 'N/A' }}</li>
           <li><strong>Pages:</strong> {{ book.page_count or 'N/A' }}</li>
           <li><strong>Language:</strong> {{ book.language or 'N/A' }}</li>
+
+          {# Genres line: show comma-separated list or N/A #}
+          <li>
+            <strong>Genres:</strong>
+            {% if genres %}
+              {{ genres | join(', ') }}
+            {% else %}
+              N/A
+            {% endif %}
+          </li>
         </ul>
 
         <!-- Tracking UI -->

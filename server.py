@@ -311,7 +311,28 @@ def book(book_id):
             print("tracking lookup error:", e)
             tracking = None
 
-    return render_template("book_page.html", book=book, reviews=reviews, tracking=tracking)
+    # --- load genres for this book ---
+    try:
+        gen_cur = g.conn.execute(
+            text("""
+                SELECT g.genre_name
+                FROM genre g
+                JOIN categorized_as ca ON ca.genre_id = g.genre_id
+                WHERE ca.book_id = :bid
+                ORDER BY g.genre_name
+            """),
+            {"bid": book_id}
+        )
+        genres = []
+        for gr in gen_cur:
+            gm = getattr(gr, "_mapping", gr)
+            genres.append(gm.get("genre_name") if hasattr(gm, "get") else gr[0])
+        gen_cur.close()
+    except Exception as e:
+        print("book genres db error:", e)
+        genres = []
+
+    return render_template("book_page.html", book=book, reviews=reviews, tracking=tracking, genres=genres)
 
 @app.route('/book/<int:book_id>/track', methods=['POST'])
 def track_book(book_id):
